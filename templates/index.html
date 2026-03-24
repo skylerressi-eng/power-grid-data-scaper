@@ -354,6 +354,111 @@
       </div>
     </section>
 
+    <!-- ── Goal-Based Simulation Engine ──────────────────────────────────── -->
+    <section id="simulation-section">
+      <div class="card optimizer-card">
+        <h3 class="card-title">Goal-Based Simulation Engine</h3>
+        <p class="optimizer-desc">
+          Run Monte Carlo simulations varying demand response and renewable mix across
+          the generator fleet. Set a dollar savings goal and we'll keep simulating until
+          a scenario achieves it — or until the max simulation count is reached.
+        </p>
+
+        <div class="sim-controls">
+          <div class="sim-input-group">
+            <label for="savings-goal-input">Savings Goal ($/yr)</label>
+            <input type="number" id="savings-goal-input" value="100" min="1" max="999999999" step="1" />
+          </div>
+          <div class="sim-input-group">
+            <label for="max-sims-input">Max Simulations</label>
+            <input type="number" id="max-sims-input" value="100" min="10" max="500" step="10" />
+          </div>
+          <button id="run-sims-btn" class="btn-algo">
+            <span id="sims-btn-icon">▶</span>
+            <span id="sims-btn-label">Run Simulations</span>
+            <span id="sims-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
+
+        <!-- Progress -->
+        <div id="sim-progress-wrap" class="hidden">
+          <div class="algo-progress-bar-wrap">
+            <div class="algo-progress-track">
+              <div class="algo-progress-fill" id="sim-progress-fill"></div>
+            </div>
+            <span class="algo-progress-pct" id="sim-progress-pct">0%</span>
+          </div>
+          <div id="sim-status-text" class="sim-status-text">Fetching grid data…</div>
+        </div>
+
+        <!-- Results -->
+        <div id="sim-results" class="hidden">
+          <div id="sim-complete-banner" class="algo-complete-banner">
+            <span class="algo-complete-icon">✓</span>
+            <span id="sim-complete-text">Simulations Complete</span>
+          </div>
+
+          <div class="algo-kpi-grid" style="margin-top:1rem">
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Baseline Annual Cost</div>
+              <div class="algo-kpi-value" id="sim-baseline-cost">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Best Annual Savings</div>
+              <div class="algo-kpi-value accent-green" id="sim-best-savings">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Goal ($<span id="sim-goal-label">—</span>) Reached At</div>
+              <div class="algo-kpi-value accent-green" id="sim-goal-at">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Simulations Run</div>
+              <div class="algo-kpi-value" id="sim-total-run">—</div>
+            </div>
+          </div>
+
+          <!-- Best scenario -->
+          <div id="sim-best-scenario" class="hidden" style="margin-top:1.2rem">
+            <h4 class="algo-actions-title">Best Scenario Found</h4>
+            <div class="algo-kpi-grid">
+              <div class="algo-kpi">
+                <div class="algo-kpi-label">Demand Response</div>
+                <div class="algo-kpi-value" id="best-dr-pct">—</div>
+              </div>
+              <div class="algo-kpi">
+                <div class="algo-kpi-label">Renewable Boost</div>
+                <div class="algo-kpi-value accent-green" id="best-renew-boost">—</div>
+              </div>
+              <div class="algo-kpi">
+                <div class="algo-kpi-label">Annual Cost</div>
+                <div class="algo-kpi-value" id="best-annual-cost">—</div>
+              </div>
+              <div class="algo-kpi">
+                <div class="algo-kpi-label">Annual Savings</div>
+                <div class="algo-kpi-value accent-green" id="best-annual-savings">—</div>
+              </div>
+              <div class="algo-kpi">
+                <div class="algo-kpi-label">Renewable % (Avg)</div>
+                <div class="algo-kpi-value accent-green" id="best-renew-pct">—</div>
+              </div>
+              <div class="algo-kpi">
+                <div class="algo-kpi-label">Annual CO₂ Reduction</div>
+                <div class="algo-kpi-value" id="best-co2-delta">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulation scatter chart -->
+          <div style="margin-top:1.4rem">
+            <div class="algo-actions-title" style="margin-bottom:.6rem">Simulation Results — Annual Savings per Run</div>
+            <div class="chart-wrap" style="height:220px">
+              <canvas id="sim-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div><!-- /#results -->
 
   <!-- Error banner -->

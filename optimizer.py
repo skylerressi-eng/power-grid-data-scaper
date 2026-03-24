@@ -467,3 +467,106 @@ class PowerGridOptimizer:
             })
 
         return recs
+
+    def run_goal_simulations(
+        self, grid_data: Dict, savings_goal: float = 100.0, max_sims: int = 100
+    ) -> Dict:
+        """
+        Monte Carlo simulation: vary demand-response % and renewable boost %
+        to find configurations that achieve >= savings_goal in annual savings.
+        Stops early once any scenario crosses the goal; always runs max_sims.
+        Returns all simulation results plus the best scenario found.
+        """
+        import random
+
+        # ── Baseline ──────────────────────────────────────────────────────────
+        base_opt = self.optimize(grid_data)
+        if base_opt["status"] != "success":
+            return {"status": "error", "message": "Baseline optimization failed"}
+
+        baseline_cost = base_opt["annual_operating_cost_usd"]
+
+        simulations: list = []
+        best_savings = 0.0
+        best_scenario = None
+        sims_to_reach_goal = None
+
+        rng = random.Random(42)  # reproducible seed
+
+        for i in range(max_sims):
+            dr_pct = rng.uniform(0, 25)          # demand-response 0–25 %
+            renew_boost = rng.uniform(0, 30)     # renewable capacity addition 0–30 %
+            fuel_mult = rng.uniform(0.80, 1.20)  # fuel-price variability ±20 %
+
+            # ── Apply demand response ─────────────────────────────────────────
+            dr_factor = 1.0 - dr_pct / 100.0
+            peak_base = grid_data.get("peak_demand_mw", 5000)
+            avg_base = grid_data.get("avg_demand_mw", peak_base * 0.65)
+            modified = dict(grid_data)
+            modified["peak_demand_mw"] = peak_base * dr_factor
+            modified["avg_demand_mw"] = avg_base * dr_factor
+
+            # ── Apply renewable boost (shift fossil → solar) ──────────────────
+            mix = dict(grid_data.get("generation_mix", {}))
+            renewable_fuels = {"wind", "solar", "hydro", "geothermal"}
+            fossil_fuels = ["natural-gas", "coal", "other"]
+            fossil_total = sum(mix.get(f, 0) for f in fossil_fuels)
+            if renew_boost > 0 and fossil_total > 0:
+                transfer = min(renew_boost, fossil_total * 0.6)
+                mix["solar"] = mix.get("solar", 0) + transfer
+                scale = (fossil_total - transfer) / fossil_total
+                for f in fossil_fuels:
+                    mix[f] = mix.get(f, 0) * scale
+                total = sum(v for v in mix.values() if v > 0)
+                if total > 0:
+                    mix = {k: round(v * 100 / total, 1) for k, v in mix.items() if v > 0}
+            modified["generation_mix"] = mix
+
+            # ── Run optimizer ─────────────────────────────────────────────────
+            try:
+                opt = self.optimize(modified)
+                if opt["status"] != "success":
+                    continue
+                sim_cost = opt["annual_operating_cost_usd"] * fuel_mult
+                annual_savings = baseline_cost - sim_cost
+            except Exception:
+                continue
+
+            if annual_savings > best_savings:
+                best_savings = annual_savings
+                best_scenario = {
+                    "demand_response_pct": round(dr_pct, 1),
+                    "renewable_boost_pct": round(renew_boost, 1),
+                    "fuel_cost_mult": round(fuel_mult, 3),
+                    "annual_cost_usd": round(sim_cost, 0),
+                    "annual_savings_usd": round(annual_savings, 0),
+                    "renewable_pct_avg": opt["renewable_pct_avg"],
+                    "annual_co2_tons": opt["annual_co2_tons"],
+                    "reserve_margin_pct": opt["reserve_margin_pct"],
+                }
+
+            if sims_to_reach_goal is None and annual_savings >= savings_goal:
+                sims_to_reach_goal = i + 1
+
+            simulations.append({
+                "sim_id": i + 1,
+                "demand_response_pct": round(dr_pct, 1),
+                "renewable_boost_pct": round(renew_boost, 1),
+                "fuel_cost_mult": round(fuel_mult, 3),
+                "annual_savings_usd": round(annual_savings, 2),
+                "annual_cost_usd": round(sim_cost, 0),
+                "reached_goal": annual_savings >= savings_goal,
+            })
+
+        return {
+            "status": "success",
+            "baseline_annual_cost_usd": round(baseline_cost, 0),
+            "savings_goal_usd": savings_goal,
+            "max_sims": max_sims,
+            "simulations_run": len(simulations),
+            "goal_reached": sims_to_reach_goal is not None,
+            "sims_to_reach_goal": sims_to_reach_goal,
+            "best_savings_usd": round(best_savings, 0),
+            "best_scenario": best_scenario,
+            "simulations": simulations,
+        }

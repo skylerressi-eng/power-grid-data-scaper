@@ -138,6 +138,41 @@ def api_analyze():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/simulate", methods=["POST"])
+def api_simulate():
+    body = request.get_json(silent=True) or {}
+    state = body.get("state", "").strip()
+    city = body.get("city", "").strip()
+    request_eia_key = (body.get("eia_api_key") or "").strip()
+    effective_eia_key = request_eia_key or EIA_API_KEY
+    savings_goal = float(body.get("savings_goal", 100.0))
+    max_sims = min(int(body.get("max_sims", 100)), 500)
+
+    if not state or not city:
+        return jsonify({"error": "Both 'state' and 'city' are required"}), 400
+
+    state_abbrev = get_state_abbrev(state)
+    if not state_abbrev:
+        return jsonify({"error": f"Unknown state: {state}"}), 400
+
+    try:
+        scraper = PowerGridScraper(
+            eia_api_key=effective_eia_key,
+            openei_api_key=OPENEI_API_KEY,
+        )
+        grid_data = scraper.get_grid_data(state, city, state_abbrev)
+        optimizer = PowerGridOptimizer()
+        result = optimizer.run_goal_simulations(
+            grid_data, savings_goal=savings_goal, max_sims=max_sims
+        )
+        return jsonify(_native(result))
+    except PermissionError as e:
+        return jsonify({"error": str(e), "error_type": "invalid_key"}), 400
+    except Exception as e:
+        logger.exception(f"Simulation failed for {city}, {state}")
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/api/test-key", methods=["POST"])
 def api_test_key():
     """

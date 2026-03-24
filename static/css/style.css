@@ -908,3 +908,50 @@ footer a:hover { color: var(--blue); }
   color: var(--text-muted);
   line-height: 1.5;
 }
+
+/* ── Goal-Based Simulation ─────────────────────────────────────────────────── */
+.sim-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.sim-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-input-group label {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+}
+
+.sim-input-group input[type="number"] {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: .92rem;
+  padding: 8px 12px;
+  width: 160px;
+  outline: none;
+  transition: border-color .15s;
+}
+
+.sim-input-group input[type="number"]:focus {
+  border-color: var(--blue);
+}
+
+.sim-status-text {
+  font-size: .78rem;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  margin-top: 8px;
+  min-height: 1.4em;
+}

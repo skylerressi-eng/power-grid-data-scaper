@@ -662,3 +662,201 @@ function resetOptimizer() {
   setProgress(0);
   document.getElementById('algo-step-list').innerHTML = '';
 }
+
+// ── Goal-Based Simulation Engine ──────────────────────────────────────────
+let simChart = null;
+
+document.getElementById('run-sims-btn').addEventListener('click', runSimulations);
+
+async function runSimulations() {
+  if (!lastOptData) return;
+
+  const goalInput   = document.getElementById('savings-goal-input');
+  const maxInput    = document.getElementById('max-sims-input');
+  const btn         = document.getElementById('run-sims-btn');
+  const btnLabel    = document.getElementById('sims-btn-label');
+  const spinner     = document.getElementById('sims-spinner');
+  const progWrap    = document.getElementById('sim-progress-wrap');
+  const statusText  = document.getElementById('sim-status-text');
+  const resultsDiv  = document.getElementById('sim-results');
+
+  const savingsGoal = parseFloat(goalInput.value) || 100;
+  const maxSims     = parseInt(maxInput.value)    || 100;
+
+  btn.disabled = true;
+  btnLabel.textContent = 'Running…';
+  spinner.classList.remove('hidden');
+  progWrap.classList.remove('hidden');
+  resultsDiv.classList.add('hidden');
+  simSetProgress(0);
+  statusText.textContent = 'Fetching grid data and running simulations…';
+
+  const eia_api_key = (document.getElementById('api-key-input')?.value || '').trim();
+
+  let data;
+  try {
+    const res = await fetch('/api/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        state: lastOptData.state,
+        city:  lastOptData.city,
+        eia_api_key,
+        savings_goal: savingsGoal,
+        max_sims: maxSims,
+      }),
+    });
+    data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+  } catch (e) {
+    showError('Simulation failed: ' + e.message);
+    btn.disabled = false;
+    btnLabel.textContent = 'Run Simulations';
+    spinner.classList.add('hidden');
+    progWrap.classList.add('hidden');
+    return;
+  }
+
+  // Animate through simulation results
+  const sims = data.simulations || [];
+  const total = sims.length;
+  let animIdx = 0;
+
+  const chartLabels = [];
+  const chartData   = [];
+  const chartColors = [];
+  const goalLine    = savingsGoal;
+
+  function animateNext() {
+    if (animIdx >= total) {
+      // Done — show results
+      simSetProgress(100);
+      statusText.textContent = `Complete — ${total} simulations run.`;
+      spinner.classList.add('hidden');
+      btnLabel.textContent = 'Re-Run Simulations';
+      btn.disabled = false;
+      showSimResults(data, savingsGoal, chartLabels, chartData, chartColors, goalLine);
+      return;
+    }
+
+    const sim = sims[animIdx];
+    const pct = Math.round((animIdx + 1) / total * 99);
+    simSetProgress(pct);
+    statusText.textContent =
+      `Simulation ${sim.sim_id} of ${total} — DR: ${sim.demand_response_pct}%  |  ` +
+      `Renew +${sim.renewable_boost_pct}%  |  ` +
+      `Savings: $${fmt(sim.annual_savings_usd)}`;
+
+    chartLabels.push(sim.sim_id);
+    chartData.push(sim.annual_savings_usd);
+    chartColors.push(sim.reached_goal ? '#3fb950' : '#58a6ff');
+
+    animIdx++;
+    // Speed: ~20ms/sim for smooth animation without being too slow
+    setTimeout(animateNext, Math.max(6, Math.round(1800 / total)));
+  }
+
+  animateNext();
+}
+
+function simSetProgress(pct) {
+  const p = Math.min(100, Math.round(pct));
+  document.getElementById('sim-progress-fill').style.width = p + '%';
+  document.getElementById('sim-progress-pct').textContent = p + '%';
+}
+
+function showSimResults(data, goal, labels, values, colors, goalLine) {
+  const resultsDiv = document.getElementById('sim-results');
+
+  // Banner
+  const goalReached = data.goal_reached;
+  document.getElementById('sim-complete-text').textContent = goalReached
+    ? `Goal Reached — $${fmt(goal)}/yr savings found at simulation #${data.sims_to_reach_goal}`
+    : `Simulations Complete — Goal of $${fmt(goal)}/yr not reached (best: $${fmt(data.best_savings_usd)})`;
+  document.getElementById('sim-complete-banner').style.background =
+    goalReached ? 'rgba(63,185,80,.12)' : 'rgba(240,136,62,.12)';
+  document.getElementById('sim-complete-banner').style.borderColor =
+    goalReached ? 'var(--green)' : 'var(--orange)';
+
+  // KPIs
+  document.getElementById('sim-baseline-cost').textContent = '$' + fmt(data.baseline_annual_cost_usd) + '/yr';
+  document.getElementById('sim-best-savings').textContent  = '$' + fmt(data.best_savings_usd) + '/yr';
+  document.getElementById('sim-goal-label').textContent    = fmt(goal);
+  document.getElementById('sim-goal-at').textContent       = goalReached
+    ? `Sim #${data.sims_to_reach_goal}` : 'Not reached';
+  document.getElementById('sim-total-run').textContent     = data.simulations_run;
+
+  // Best scenario
+  const bs = data.best_scenario;
+  if (bs) {
+    document.getElementById('best-dr-pct').textContent        = bs.demand_response_pct + '% reduction';
+    document.getElementById('best-renew-boost').textContent   = '+' + bs.renewable_boost_pct + '% renewables';
+    document.getElementById('best-annual-cost').textContent   = '$' + fmt(bs.annual_cost_usd) + '/yr';
+    document.getElementById('best-annual-savings').textContent= '$' + fmt(bs.annual_savings_usd) + '/yr';
+    document.getElementById('best-renew-pct').textContent     = bs.renewable_pct_avg + '%';
+    const co2Delta = lastOptData?.optimization?.annual_co2_tons && bs.annual_co2_tons
+      ? fmt(Math.round(lastOptData.optimization.annual_co2_tons - bs.annual_co2_tons)) + ' tons/yr'
+      : '—';
+    document.getElementById('best-co2-delta').textContent = co2Delta;
+    document.getElementById('sim-best-scenario').classList.remove('hidden');
+  }
+
+  // Chart
+  if (simChart) simChart.destroy();
+  const ctx = document.getElementById('sim-chart').getContext('2d');
+  simChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Annual Savings ($)',
+          data: values,
+          backgroundColor: colors,
+          borderWidth: 0,
+          borderRadius: 2,
+        },
+        {
+          type: 'line',
+          label: `Goal: $${fmt(goal)}`,
+          data: Array(labels.length).fill(goalLine),
+          borderColor: '#f0883e',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 0,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { display: labels.length <= 50, font: { size: 9 } },
+          title: { display: true, text: 'Simulation #', color: '#8b949e' },
+        },
+        y: {
+          grid: { color: '#21262d' },
+          ticks: { callback: v => '$' + fmt(v) },
+          title: { display: true, text: 'Annual Savings ($)', color: '#8b949e' },
+        },
+      },
+      plugins: {
+        legend: { labels: { font: { size: 11 }, color: '#8b949e', boxWidth: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.type === 'line'
+              ? ` Goal: $${fmt(ctx.parsed.y)}`
+              : ` Sim #${ctx.label}: $${fmt(ctx.parsed.y)} savings`,
+          },
+        },
+      },
+    },
+  });
+
+  resultsDiv.classList.remove('hidden');
+  resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
