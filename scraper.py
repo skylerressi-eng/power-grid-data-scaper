@@ -338,76 +338,139 @@ class PowerGridScraper:
         return self._simulated_state_data(state_abbrev)
 
     def _live_eia_data(self, state_abbrev: str) -> Dict:
-        """Call EIA API v2 for generation and retail sales data."""
-        # Generation mix
-        gen_url = f"{EIA_BASE}/electricity/electric-power-operational-data/data/"
-        gen_params = {
-            "api_key": self.eia_api_key,
-            "frequency": "annual",
-            "data[]": "generation",
-            "facets[location][]": state_abbrev,
-            "sort[0][column]": "period",
-            "sort[0][direction]": "desc",
-            "length": 12,
-        }
-        gen_resp = self.session.get(gen_url, params=gen_params, timeout=10)
+        """
+        Call EIA API v2 for generation and retail sales data.
+
+        URLs are built as f-strings rather than using requests' params dict
+        because requests percent-encodes bracket characters ([ → %5B) which
+        the EIA v2 API does not accept.
+        """
+        k = self.eia_api_key
+
+        # Annual electric-power operations by fuel type — fetch last 5 years
+        # so we can build real historical data for 2021-2023.
+        gen_url = (
+            f"{EIA_BASE}/electricity/electric-power-operational-data/data/"
+            f"?api_key={k}&frequency=annual&data[0]=generation"
+            f"&facets[location][]={state_abbrev}"
+            f"&sort[0][column]=period&sort[0][direction]=desc&length=60"
+        )
+        gen_resp = self.session.get(gen_url, timeout=12)
         gen_resp.raise_for_status()
         gen_data = gen_resp.json().get("response", {}).get("data", [])
+        logger.info(f"EIA gen rows for {state_abbrev}: {len(gen_data)}")
 
-        # Retail sales (price & consumption)
-        sales_url = f"{EIA_BASE}/electricity/retail-sales/data/"
-        sales_params = {
-            "api_key": self.eia_api_key,
-            "frequency": "annual",
-            "data[]": ["revenue", "sales", "price", "customers"],
-            "facets[stateid][]": state_abbrev,
-            "sort[0][column]": "period",
-            "sort[0][direction]": "desc",
-            "length": 5,
-        }
-        sales_resp = self.session.get(sales_url, params=sales_params, timeout=10)
+        # Retail sales — price, consumption — last 5 years, all sectors
+        sales_url = (
+            f"{EIA_BASE}/electricity/retail-sales/data/"
+            f"?api_key={k}&frequency=annual"
+            f"&data[0]=revenue&data[1]=sales&data[2]=price&data[3]=customers"
+            f"&facets[stateid][]={state_abbrev}"
+            f"&sort[0][column]=period&sort[0][direction]=desc&length=20"
+        )
+        sales_resp = self.session.get(sales_url, timeout=12)
         sales_resp.raise_for_status()
         sales_data = sales_resp.json().get("response", {}).get("data", [])
+        logger.info(f"EIA sales rows for {state_abbrev}: {len(sales_data)}")
 
         return self._parse_eia_response(gen_data, sales_data, state_abbrev)
 
     def _parse_eia_response(self, gen_data, sales_data, state_abbrev: str) -> Dict:
-        """Parse EIA API response into structured data."""
+        """Parse EIA API response into structured data, including 3-year live historical."""
         fuel_map = {
             "NG": "natural-gas", "COL": "coal", "NUC": "nuclear",
             "HYC": "hydro", "SUN": "solar", "WND": "wind",
             "GEO": "geothermal", "OTH": "other",
+            "PEL": "other", "PC": "other", "OOG": "other",
+            "WWW": "other", "WAS": "other", "HPS": "hydro",
         }
-        generation_mix = {}
-        total_gen = 0
 
+        # Group generation by year then fuel (summing across all sectors)
+        by_year: Dict[str, Dict[str, float]] = {}
         for row in gen_data:
+            year = str(row.get("period", ""))[:4]
+            if not year.isdigit():
+                continue
             fuel = fuel_map.get(row.get("fueltypeid", ""), "other")
-            gen_val = float(row.get("generation", 0) or 0)
-            generation_mix[fuel] = generation_mix.get(fuel, 0) + gen_val
-            total_gen += gen_val
+            val = float(row.get("generation", 0) or 0)
+            by_year.setdefault(year, {})
+            by_year[year][fuel] = by_year[year].get(fuel, 0) + val
 
-        if total_gen > 0:
-            generation_mix = {k: round(v / total_gen * 100, 1) for k, v in generation_mix.items()}
+        # Build generation mix for most-recent year
+        current_year = max(by_year.keys()) if by_year else "2023"
+        current_gen = by_year.get(current_year, {})
+        total_gen = sum(current_gen.values())
+        generation_mix = (
+            {k: round(v / total_gen * 100, 1) for k, v in current_gen.items()}
+            if total_gen > 0 else STATE_GENERATION_PROFILES.get(state_abbrev, {})
+        )
 
-        retail_price = None
-        annual_sales_gwh = None
+        # Build price lookup by year from sales data (prefer sectorid ALL or first match)
+        price_by_year: Dict[str, float] = {}
+        sales_by_year: Dict[str, float] = {}
         for row in sales_data:
-            if row.get("sectorid") == "ALL":
-                retail_price = float(row.get("price", 0) or 0)
-                annual_sales_gwh = float(row.get("sales", 0) or 0) / 1000
-                break
+            yr = str(row.get("period", ""))[:4]
+            if not yr.isdigit() or yr in price_by_year:
+                continue
+            price_val = float(row.get("price", 0) or 0)
+            sales_val = float(row.get("sales", 0) or 0)
+            if price_val:
+                price_by_year[yr] = price_val
+            if sales_val:
+                sales_by_year[yr] = sales_val / 1000  # million kWh → GWh
+
+        retail_price = price_by_year.get(current_year) or STATE_RETAIL_PRICE.get(state_abbrev, 12.0)
+        annual_sales_gwh = sales_by_year.get(current_year)
 
         cap = STATE_CAPACITY.get(state_abbrev, {"capacity": 10000, "peak": 8000, "avg_load": 5200})
+
+        # Build live historical for 2021-2023
+        historical = []
+        for yr_str in ["2021", "2022", "2023"]:
+            yr_gen = by_year.get(yr_str, {})
+            yr_total = sum(yr_gen.values())
+            if yr_total > 0:
+                yr_mix = {k: round(v / yr_total * 100, 1) for k, v in yr_gen.items()}
+                src = "EIA API (live)"
+            else:
+                # Fall back to trend-adjusted profile for missing years
+                profile = STATE_GENERATION_PROFILES.get(state_abbrev, {})
+                f = HISTORICAL_TREND_FACTORS.get(int(yr_str), HISTORICAL_TREND_FACTORS[2023])
+                raw = {fuel: pct * f.get(fuel, 1.0) for fuel, pct in profile.items()}
+                t = sum(raw.values())
+                yr_mix = {k: round(v / t * 100, 1) for k, v in raw.items()} if t > 0 else profile
+                src = "simulated"
+
+            f = HISTORICAL_TREND_FACTORS.get(int(yr_str), HISTORICAL_TREND_FACTORS[2023])
+            cm = f["capacity_mult"]
+            yr_price = (
+                price_by_year.get(yr_str)
+                or round(STATE_RETAIL_PRICE.get(state_abbrev, 12.0) * f["price_mult"], 2)
+            )
+            renew_pct = round(sum(v for k, v in yr_mix.items() if k in RENEWABLE_FUELS), 1)
+
+            historical.append({
+                "year": int(yr_str),
+                "generation_mix": yr_mix,
+                "total_capacity_mw": round(cap["capacity"] * cm),
+                "peak_demand_mw": round(cap["peak"] * cm),
+                "avg_demand_mw": round(cap["avg_load"] * cm),
+                "retail_price_cents_kwh": yr_price,
+                "annual_sales_gwh": sales_by_year.get(yr_str) or round(cap["avg_load"] * cm * 8760 / 1000),
+                "renewable_pct": renew_pct,
+                "data_source": src,
+            })
+
         return {
-            "generation_mix": generation_mix or STATE_GENERATION_PROFILES.get(state_abbrev, {}),
+            "generation_mix": generation_mix,
             "total_capacity_mw": cap["capacity"],
             "peak_demand_mw": cap["peak"],
             "avg_demand_mw": cap["avg_load"],
-            "retail_price_cents_kwh": retail_price or STATE_RETAIL_PRICE.get(state_abbrev, 12.0),
+            "retail_price_cents_kwh": retail_price,
             "annual_sales_gwh": annual_sales_gwh,
             "data_source": "EIA API (live)",
-            "data_year": 2023,
+            "data_year": int(current_year),
+            "historical": historical,
         }
 
     def _simulated_state_data(self, state_abbrev: str) -> Dict:
