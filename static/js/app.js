@@ -409,16 +409,59 @@ function hideError() {
   errorBanner.classList.add('hidden');
 }
 
-// ── API Key input ──────────────────────────────────────────────────────────
+// ── API Key input + Test Key ───────────────────────────────────────────────
 (function initApiKey() {
-  const input  = document.getElementById('api-key-input');
-  const toggle = document.getElementById('api-key-toggle');
+  const input   = document.getElementById('api-key-input');
+  const toggle  = document.getElementById('api-key-toggle');
+  const testBtn = document.getElementById('test-key-btn');
+  const status  = document.getElementById('key-status');
   if (!input) return;
+
+  // Restore saved key
   input.value = localStorage.getItem('eia_api_key') || '';
-  input.addEventListener('change', () => localStorage.setItem('eia_api_key', input.value.trim()));
+
+  // Save on change
+  input.addEventListener('change', () => {
+    localStorage.setItem('eia_api_key', input.value.trim());
+    status.className = 'key-status hidden';
+  });
+
+  // Show/hide toggle
   toggle.addEventListener('click', () => {
     input.type = input.type === 'password' ? 'text' : 'password';
   });
+
+  // Test Key button
+  testBtn.addEventListener('click', async () => {
+    const key = input.value.trim();
+    if (!key) {
+      setKeyStatus('error', 'Enter your API key first.');
+      return;
+    }
+    localStorage.setItem('eia_api_key', key);
+    testBtn.disabled = true;
+    testBtn.textContent = 'Testing…';
+    setKeyStatus('testing', 'Contacting EIA API…');
+    try {
+      const res  = await fetch('/api/test-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eia_api_key: key }),
+      });
+      const data = await res.json();
+      setKeyStatus(data.valid ? 'ok' : 'error', data.message);
+    } catch (e) {
+      setKeyStatus('error', 'Network error: ' + e.message);
+    } finally {
+      testBtn.disabled = false;
+      testBtn.textContent = 'Test Key';
+    }
+  });
+
+  function setKeyStatus(type, msg) {
+    status.textContent = (type === 'ok' ? '✓ ' : type === 'error' ? '✗ ' : '◎ ') + msg;
+    status.className = 'key-status key-status-' + type;
+  }
 })();
 
 // Pass API key with every analyze request — patch the click handler
@@ -441,7 +484,13 @@ analyzeBtn.addEventListener('click', async function analyzeHandler() {
       body: JSON.stringify({ state, city, eia_api_key }),
     });
     const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+    if (!res.ok || data.error) {
+      const msg = data.error || `HTTP ${res.status}`;
+      if (data.error_type === 'invalid_key') {
+        throw new Error('Invalid EIA API key — use the "Test Key" button to verify your key, or get a free key at eia.gov/opendata');
+      }
+      throw new Error(msg);
+    }
     renderResults(data);
     resultsDiv.classList.remove('hidden');
     resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });

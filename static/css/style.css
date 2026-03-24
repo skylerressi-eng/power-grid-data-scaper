@@ -592,7 +592,28 @@ footer a:hover { color: var(--blue); }
   font-size: 1rem;
   transition: background .15s;
 }
-.btn-icon:hover { background: var(--border); }
+.btn-icon:hover:not(:disabled) { background: var(--border); }
+.btn-icon:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-test-key {
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 0 14px;
+  color: var(--blue);
+  border-color: rgba(88,166,255,.3);
+}
+
+.key-status {
+  font-size: .8rem;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  margin-top: 4px;
+  font-weight: 500;
+}
+.key-status.hidden          { display: none; }
+.key-status-ok              { background: rgba(63,185,80,.1);  color: var(--green); border: 1px solid rgba(63,185,80,.25); }
+.key-status-error           { background: rgba(248,81,73,.1);  color: var(--red);   border: 1px solid rgba(248,81,73,.25); }
+.key-status-testing         { background: rgba(88,166,255,.1); color: var(--blue);  border: 1px solid rgba(88,166,255,.25); }
 
 /* ── City Profile Card ────────────────────────────────────────────────────── */
 .city-profile-card .card-title { margin-bottom: 14px; }

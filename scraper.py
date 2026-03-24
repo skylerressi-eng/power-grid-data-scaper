@@ -9,9 +9,12 @@ Falls back to realistic simulated data if API keys are unavailable.
 """
 
 import os
+import json as _json
 import requests
 import logging
 from typing import Dict, Any
+from urllib.request import urlopen as _urlopen, Request as _URequest
+from urllib.error import HTTPError as _HTTPError
 
 logger = logging.getLogger(__name__)
 
@@ -578,43 +581,67 @@ class PowerGridScraper:
             "all_providers": [name],
         }
 
+    # ── EIA HTTP helper ────────────────────────────────────────────────────
+    @staticmethod
+    def _eia_get(url: str) -> dict:
+        """
+        Fetch an EIA API v2 URL without percent-encoding bracket characters.
+
+        Python's requests library re-encodes brackets in any URL it receives
+        ([ → %5B, ] → %5D) via PreparedRequest.prepare_url(), even when the
+        URL is already a pre-built string.  Python's urllib.request does NOT
+        re-encode characters that are already in the URL string; it sends the
+        query string byte-for-byte as written, so data[0]=generation reaches
+        the EIA server unmodified.
+        """
+        req = _URequest(url, headers={"Accept": "application/json"})
+        try:
+            with _urlopen(req, timeout=12) as resp:
+                return _json.loads(resp.read().decode("utf-8"))
+        except _HTTPError as exc:
+            if exc.code == 403:
+                raise PermissionError(
+                    "EIA API key invalid or missing (HTTP 403 Forbidden). "
+                    "Get a free key at https://www.eia.gov/opendata/ and enter "
+                    "it in the API Key field above."
+                ) from exc
+            if exc.code == 400:
+                body = exc.read().decode("utf-8", errors="replace")
+                raise ValueError(f"EIA API bad request (HTTP 400): {body[:200]}") from exc
+            raise
+
     def _fetch_eia_state_data(self, state_abbrev: str) -> Dict:
         """
         Fetch state electricity data from EIA API v2.
-        Falls back to simulated data if key is unavailable or request fails.
+        Raises PermissionError for bad keys (so the UI can show a clear message).
+        Falls back to simulated data only on network/parse errors.
         """
-        if self.eia_api_key:
-            try:
-                return self._live_eia_data(state_abbrev)
-            except Exception as e:
-                logger.warning(f"EIA API call failed ({e}), using simulated data")
-
-        return self._simulated_state_data(state_abbrev)
+        if not self.eia_api_key:
+            return self._simulated_state_data(state_abbrev)
+        try:
+            return self._live_eia_data(state_abbrev)
+        except PermissionError:
+            raise   # propagate 403 as a clear error to the caller
+        except Exception as e:
+            logger.warning(f"EIA API call failed ({e}), falling back to simulated data")
+            return self._simulated_state_data(state_abbrev)
 
     def _live_eia_data(self, state_abbrev: str) -> Dict:
-        """
-        Call EIA API v2 for generation and retail sales data.
-
-        URLs are built as f-strings rather than using requests' params dict
-        because requests percent-encodes bracket characters ([ → %5B) which
-        the EIA v2 API does not accept.
-        """
+        """Call EIA API v2 for generation and retail sales data via urllib."""
         k = self.eia_api_key
 
-        # Annual electric-power operations by fuel type — fetch last 5 years
-        # so we can build real historical data for 2021-2023.
+        # Annual electric-power operations by fuel type — last 5 years
         gen_url = (
             f"{EIA_BASE}/electricity/electric-power-operational-data/data/"
             f"?api_key={k}&frequency=annual&data[0]=generation"
             f"&facets[location][]={state_abbrev}"
             f"&sort[0][column]=period&sort[0][direction]=desc&length=60"
         )
-        gen_resp = self.session.get(gen_url, timeout=12)
-        gen_resp.raise_for_status()
-        gen_data = gen_resp.json().get("response", {}).get("data", [])
+        gen_body = self._eia_get(gen_url)
+        gen_data = gen_body.get("response", {}).get("data", [])
         logger.info(f"EIA gen rows for {state_abbrev}: {len(gen_data)}")
 
-        # Retail sales — price, consumption — last 5 years, all sectors
+        # Retail sales — price, consumption — last 5 years
         sales_url = (
             f"{EIA_BASE}/electricity/retail-sales/data/"
             f"?api_key={k}&frequency=annual"
@@ -622,9 +649,8 @@ class PowerGridScraper:
             f"&facets[stateid][]={state_abbrev}"
             f"&sort[0][column]=period&sort[0][direction]=desc&length=20"
         )
-        sales_resp = self.session.get(sales_url, timeout=12)
-        sales_resp.raise_for_status()
-        sales_data = sales_resp.json().get("response", {}).get("data", [])
+        sales_body = self._eia_get(sales_url)
+        sales_data = sales_body.get("response", {}).get("data", [])
         logger.info(f"EIA sales rows for {state_abbrev}: {len(sales_data)}")
 
         return self._parse_eia_response(gen_data, sales_data, state_abbrev)

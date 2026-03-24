@@ -130,9 +130,42 @@ def api_analyze():
         })
         return jsonify(payload)
 
+    except PermissionError as e:
+        # Invalid / missing API key — return 400 so the UI can show the message
+        return jsonify({"error": str(e), "error_type": "invalid_key"}), 400
     except Exception as e:
         logger.exception(f"Analysis failed for {city}, {state}")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/test-key", methods=["POST"])
+def api_test_key():
+    """
+    Validate an EIA API key by making a minimal live request.
+    Body: { "eia_api_key": "..." }
+    Returns: { "valid": true/false, "message": "..." }
+    """
+    body = request.get_json(silent=True) or {}
+    key = (body.get("eia_api_key") or "").strip()
+    if not key:
+        return jsonify({"valid": False, "message": "No API key provided."})
+    try:
+        # Minimal probe: 1 row from retail-sales for CA
+        probe_url = (
+            "https://api.eia.gov/v2/electricity/retail-sales/data/"
+            f"?api_key={key}&frequency=annual&data[0]=price"
+            "&facets[stateid][]=CA&sort[0][column]=period"
+            "&sort[0][direction]=desc&length=1"
+        )
+        result = PowerGridScraper._eia_get(probe_url)
+        rows = result.get("response", {}).get("data", [])
+        if rows:
+            return jsonify({"valid": True, "message": "API key valid — live EIA data active."})
+        return jsonify({"valid": True, "message": "Key accepted (probe returned 0 rows — try a full analysis)."})
+    except PermissionError:
+        return jsonify({"valid": False, "message": "Invalid API key (403 Forbidden). Check your key at eia.gov/opendata."})
+    except Exception as e:
+        return jsonify({"valid": False, "message": f"Test failed: {e}"})
 
 
 # ── Entry Point ───────────────────────────────────────────────────────────────
