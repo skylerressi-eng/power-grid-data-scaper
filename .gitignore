@@ -14,9 +14,6 @@ build/
 venv/
 env/
 
-# Environment variables
-.env
-
 # IDE
 .vscode/
 .idea/
