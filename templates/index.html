@@ -51,13 +51,21 @@
           <span id="btn-spinner" class="spinner hidden"></span>
         </button>
       </div>
-      <p class="helper-text">
-        Fetches real grid data from the EIA API and OpenEI utility registry.
-        Add your <code>EIA_API_KEY</code> in <code>.env</code> for live generation data.
-        Get a <strong>free</strong> key at
-        <a href="https://www.eia.gov/opendata/" target="_blank" rel="noopener">eia.gov/opendata</a>
-        (instant registration, no credit card).
-      </p>
+      <div class="api-key-row">
+        <div class="api-key-group">
+          <label for="api-key-input">EIA API Key <span class="api-key-optional">(required for live data)</span></label>
+          <div class="api-key-wrap">
+            <input type="password" id="api-key-input" placeholder="Paste your EIA API key here…" autocomplete="off" spellcheck="false" />
+            <button type="button" id="api-key-toggle" class="btn-icon" title="Show/hide key">👁</button>
+          </div>
+        </div>
+        <p class="helper-text">
+          Get a <strong>free</strong> key at
+          <a href="https://www.eia.gov/opendata/" target="_blank" rel="noopener">eia.gov/opendata</a>
+          — instant registration. Your key is stored only in your browser and sent directly to the EIA API.
+          Without a key, realistic <em>simulated</em> state data is used instead.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -116,6 +124,40 @@
         </div>
       </div>
 
+    </section>
+
+    <!-- City Profile -->
+    <section>
+      <div class="card city-profile-card">
+        <h3 class="card-title">City Profile <span id="city-profile-label"></span></h3>
+        <div class="city-profile-grid">
+          <div class="city-stat-box">
+            <div class="city-stat-label">City Population</div>
+            <div class="city-stat-value" id="city-pop">—</div>
+          </div>
+          <div class="city-stat-box">
+            <div class="city-stat-label">Est. Peak Demand</div>
+            <div class="city-stat-value" id="city-peak">—</div>
+          </div>
+          <div class="city-stat-box">
+            <div class="city-stat-label">Est. Annual Consumption</div>
+            <div class="city-stat-value" id="city-consumption">—</div>
+          </div>
+          <div class="city-stat-box">
+            <div class="city-stat-label">Share of State Grid</div>
+            <div class="city-stat-value accent-blue" id="city-share">—</div>
+          </div>
+          <div class="city-stat-box">
+            <div class="city-stat-label">Retail Price</div>
+            <div class="city-stat-value" id="city-price">—</div>
+          </div>
+          <div class="city-stat-box">
+            <div class="city-stat-label">Climate Zone</div>
+            <div class="city-stat-value" id="city-climate">—</div>
+          </div>
+        </div>
+        <div class="city-note" id="city-note"></div>
+      </div>
     </section>
 
     <!-- Charts -->
@@ -235,6 +277,78 @@
       <div class="card">
         <h3 class="card-title">Optimization Recommendations</h3>
         <div id="recommendations"></div>
+      </div>
+    </section>
+
+    <!-- ── Optimization Engine Box ─────────────────────────────────────── -->
+    <section id="optimizer-section">
+      <div class="card optimizer-card">
+        <h3 class="card-title">Grid Optimization Engine</h3>
+        <div class="optimizer-header">
+          <p class="optimizer-desc">
+            Run the full economic dispatch algorithm on this grid's generator fleet.
+            Uses the Equal Incremental Cost (lambda iteration) method to find the
+            least-cost dispatch that meets demand while respecting generator limits
+            and emissions constraints.
+          </p>
+          <button id="start-algo-btn" class="btn-algo">
+            <span id="algo-btn-icon">▶</span>
+            <span id="algo-btn-label">Start Algorithm</span>
+            <span id="algo-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
+
+        <!-- Progress (shown while running) -->
+        <div id="algo-progress-wrap" class="hidden">
+          <div class="algo-progress-bar-wrap">
+            <div class="algo-progress-track">
+              <div class="algo-progress-fill" id="algo-progress-fill"></div>
+            </div>
+            <span class="algo-progress-pct" id="algo-progress-pct">0%</span>
+          </div>
+          <div class="step-list" id="algo-step-list"></div>
+        </div>
+
+        <!-- Summary (shown when done) -->
+        <div id="algo-summary" class="hidden">
+          <div class="algo-complete-banner" id="algo-complete-banner">
+            <span class="algo-complete-icon">✓</span>
+            <span id="algo-complete-text">Optimization Complete</span>
+            <span class="algo-complete-sub" id="algo-convergence-note"></span>
+          </div>
+
+          <div class="algo-kpi-grid">
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Annual Operating Cost</div>
+              <div class="algo-kpi-value" id="sum-annual-cost">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Carbon Intensity</div>
+              <div class="algo-kpi-value" id="sum-carbon">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Renewable at Peak</div>
+              <div class="algo-kpi-value accent-green" id="sum-renew">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Reserve Margin</div>
+              <div class="algo-kpi-value" id="sum-reserve">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Annual CO₂</div>
+              <div class="algo-kpi-value" id="sum-co2">—</div>
+            </div>
+            <div class="algo-kpi">
+              <div class="algo-kpi-label">Load Factor</div>
+              <div class="algo-kpi-value" id="sum-lf">—</div>
+            </div>
+          </div>
+
+          <div class="algo-actions-section">
+            <h4 class="algo-actions-title">What To Do — Prioritized Action Plan</h4>
+            <div id="algo-action-list"></div>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -143,6 +143,227 @@ HISTORICAL_TREND_FACTORS = {
 
 RENEWABLE_FUELS = {"solar", "wind", "hydro", "geothermal"}
 
+# Approximate city proper populations (thousands) — used to scale state data to city level
+CITY_POPULATIONS = {
+    # Alabama
+    "Birmingham": 212, "Montgomery": 200, "Huntsville": 215, "Mobile": 187,
+    "Tuscaloosa": 105, "Hoover": 92, "Dothan": 71, "Auburn": 76,
+    "Decatur": 54, "Madison": 48,
+    # Alaska
+    "Anchorage": 291, "Fairbanks": 32, "Juneau": 32, "Sitka": 9,
+    "Ketchikan": 8, "Wasilla": 10, "Kenai": 8, "Kodiak": 6,
+    # Arizona
+    "Phoenix": 1608, "Tucson": 548, "Mesa": 504, "Chandler": 261,
+    "Scottsdale": 241, "Glendale": 248, "Gilbert": 254, "Tempe": 185,
+    "Peoria": 175, "Surprise": 143, "Yuma": 99, "Avondale": 89,
+    "Flagstaff": 75, "Goodyear": 93, "Lake Havasu City": 58,
+    # Arkansas
+    "Little Rock": 202, "Fort Smith": 89, "Fayetteville": 93,
+    "Springdale": 85, "Jonesboro": 77, "North Little Rock": 67,
+    "Conway": 67, "Rogers": 70, "Pine Bluff": 41, "Bentonville": 52,
+    # California
+    "Los Angeles": 3898, "San Diego": 1386, "San Jose": 1037,
+    "San Francisco": 874, "Fresno": 542, "Sacramento": 524,
+    "Long Beach": 466, "Oakland": 440, "Bakersfield": 383,
+    "Anaheim": 346, "Santa Ana": 310, "Riverside": 314,
+    "Stockton": 320, "Irvine": 307, "Chula Vista": 275,
+    "Fremont": 230, "San Bernardino": 222, "Modesto": 218,
+    "Fontana": 213, "Oxnard": 202,
+    # Colorado
+    "Denver": 715, "Colorado Springs": 478, "Aurora": 366,
+    "Fort Collins": 164, "Lakewood": 155, "Thornton": 136,
+    "Arvada": 118, "Westminster": 113, "Pueblo": 111,
+    "Boulder": 105, "Highlands Ranch": 105, "Greeley": 103,
+    "Longmont": 92, "Loveland": 78, "Grand Junction": 63,
+    # Connecticut
+    "Bridgeport": 148, "New Haven": 130, "Stamford": 136,
+    "Hartford": 121, "Waterbury": 114, "Norwalk": 92,
+    "Danbury": 84, "New Britain": 72, "West Hartford": 64,
+    "Greenwich": 63,
+    # Delaware
+    "Wilmington": 70, "Dover": 38, "Newark": 33, "Middletown": 23,
+    "Smyrna": 12,
+    # Florida
+    "Jacksonville": 949, "Miami": 467, "Tampa": 399, "Orlando": 309,
+    "St. Petersburg": 258, "Hialeah": 212, "Port St. Lucie": 201,
+    "Tallahassee": 196, "Cape Coral": 194, "Fort Lauderdale": 182,
+    "Pembroke Pines": 171, "Hollywood": 148, "Gainesville": 141,
+    "Miramar": 130,
+    # Georgia
+    "Atlanta": 498, "Columbus": 206, "Augusta": 202, "Macon": 153,
+    "Savannah": 147, "Athens": 127, "Sandy Springs": 108,
+    "Roswell": 94, "Albany": 73, "Warner Robins": 80,
+    # Hawaii
+    "Honolulu": 345, "Pearl City": 47, "Hilo": 45, "Kailua": 51,
+    "Waipahu": 38,
+    # Idaho
+    "Boise": 235, "Meridian": 114, "Nampa": 100, "Idaho Falls": 64,
+    "Pocatello": 55, "Caldwell": 58, "Coeur d'Alene": 51,
+    # Illinois
+    "Chicago": 2696, "Aurora": 197, "Joliet": 147, "Naperville": 148,
+    "Rockford": 148, "Elgin": 113, "Springfield": 114,
+    "Peoria": 112, "Champaign": 88, "Waukegan": 87,
+    # Indiana
+    "Indianapolis": 887, "Fort Wayne": 263, "Evansville": 117,
+    "South Bend": 103, "Carmel": 99, "Fishers": 100,
+    "Hammond": 78, "Gary": 70, "Bloomington": 84,
+    # Iowa
+    "Des Moines": 214, "Cedar Rapids": 133, "Davenport": 102,
+    "Sioux City": 82, "Iowa City": 74, "Waterloo": 67,
+    # Kansas
+    "Wichita": 397, "Overland Park": 197, "Kansas City": 152,
+    "Topeka": 126, "Olathe": 140, "Lawrence": 95,
+    # Kentucky
+    "Louisville": 633, "Lexington": 322, "Bowling Green": 72,
+    "Owensboro": 60, "Covington": 41,
+    # Louisiana
+    "New Orleans": 383, "Baton Rouge": 228, "Shreveport": 188,
+    "Metairie": 138, "Lafayette": 130,
+    # Maine
+    "Portland": 68, "Lewiston": 36, "Bangor": 32,
+    "South Portland": 26, "Auburn": 23,
+    # Maryland
+    "Baltimore": 585, "Frederick": 72, "Rockville": 68,
+    "Gaithersburg": 68, "Bowie": 58,
+    # Massachusetts
+    "Boston": 675, "Worcester": 185, "Springfield": 155,
+    "Cambridge": 118, "Lowell": 115, "Brockton": 105,
+    "New Bedford": 95, "Quincy": 94, "Lynn": 93,
+    # Michigan
+    "Detroit": 639, "Grand Rapids": 197, "Warren": 139,
+    "Sterling Heights": 131, "Ann Arbor": 121, "Lansing": 112,
+    "Flint": 81, "Dearborn": 87,
+    # Minnesota
+    "Minneapolis": 429, "St. Paul": 308, "Rochester": 121,
+    "Duluth": 90, "Bloomington": 89, "Brooklyn Park": 86,
+    "Plymouth": 80, "Maple Grove": 68,
+    # Mississippi
+    "Jackson": 153, "Gulfport": 72, "Southaven": 55,
+    "Hattiesburg": 47, "Biloxi": 46,
+    # Missouri
+    "Kansas City": 508, "St. Louis": 293, "Springfield": 167,
+    "Columbia": 122, "Independence": 119,
+    # Montana
+    "Billings": 117, "Missoula": 73, "Great Falls": 60,
+    "Bozeman": 53, "Butte": 35,
+    # Nebraska
+    "Omaha": 486, "Lincoln": 291, "Bellevue": 64,
+    "Grand Island": 52, "Kearney": 33,
+    # Nevada
+    "Las Vegas": 641, "Henderson": 320, "Reno": 264,
+    "North Las Vegas": 241, "Sparks": 102,
+    # New Hampshire
+    "Manchester": 115, "Nashua": 90, "Concord": 44,
+    "Derry": 33, "Dover": 31,
+    # New Jersey
+    "Newark": 311, "Jersey City": 292, "Paterson": 159,
+    "Elizabeth": 135, "Lakewood": 135, "Edison": 100,
+    "Woodbridge": 99, "Toms River": 91,
+    # New Mexico
+    "Albuquerque": 564, "Las Cruces": 111, "Rio Rancho": 100,
+    "Santa Fe": 84, "Roswell": 48,
+    # New York
+    "New York City": 8336, "Buffalo": 276, "Rochester": 210,
+    "Yonkers": 211, "Syracuse": 148, "Albany": 97, "New Rochelle": 79,
+    # North Carolina
+    "Charlotte": 874, "Raleigh": 467, "Greensboro": 296,
+    "Durham": 278, "Winston-Salem": 249, "Fayetteville": 211,
+    "Cary": 174, "Wilmington": 115, "High Point": 114,
+    # North Dakota
+    "Fargo": 125, "Bismarck": 73, "Grand Forks": 57,
+    "Minot": 48, "West Fargo": 36,
+    # Ohio
+    "Columbus": 905, "Cleveland": 372, "Cincinnati": 309,
+    "Toledo": 270, "Akron": 188, "Dayton": 137,
+    "Parma": 79, "Canton": 69,
+    # Oklahoma
+    "Oklahoma City": 681, "Tulsa": 413, "Norman": 128,
+    "Broken Arrow": 113, "Edmond": 92,
+    # Oregon
+    "Portland": 652, "Salem": 175, "Eugene": 176,
+    "Gresham": 109, "Hillsboro": 100, "Bend": 99,
+    # Pennsylvania
+    "Philadelphia": 1603, "Pittsburgh": 302, "Allentown": 125,
+    "Erie": 94, "Reading": 95, "Scranton": 76,
+    "Bethlehem": 75, "Lancaster": 59,
+    # Rhode Island
+    "Providence": 190, "Cranston": 81, "Warwick": 83,
+    "Pawtucket": 71, "East Providence": 47,
+    # South Carolina
+    "Columbia": 136, "Charleston": 150, "North Charleston": 114,
+    "Mount Pleasant": 89, "Rock Hill": 75,
+    # South Dakota
+    "Sioux Falls": 192, "Rapid City": 74, "Aberdeen": 28,
+    # Tennessee
+    "Nashville": 689, "Memphis": 633, "Knoxville": 190,
+    "Chattanooga": 181, "Clarksville": 156,
+    # Texas
+    "Houston": 2304, "San Antonio": 1434, "Dallas": 1288,
+    "Austin": 961, "Fort Worth": 918, "El Paso": 678,
+    "Arlington": 394, "Corpus Christi": 317, "Plano": 285,
+    "Laredo": 261, "Lubbock": 258, "Garland": 236,
+    "Irving": 239, "Amarillo": 200, "Grand Prairie": 193,
+    "Brownsville": 186, "Pasadena": 152, "McKinney": 195,
+    "Frisco": 200, "Mesquite": 140,
+    # Utah
+    "Salt Lake City": 200, "West Valley City": 140, "Provo": 115,
+    "West Jordan": 114, "Orem": 98,
+    # Vermont
+    "Burlington": 45, "South Burlington": 20, "Rutland": 15,
+    # Virginia
+    "Virginia Beach": 457, "Norfolk": 242, "Chesapeake": 249,
+    "Richmond": 226, "Newport News": 186, "Alexandria": 159,
+    "Hampton": 137, "Roanoke": 100,
+    # Washington
+    "Seattle": 737, "Spokane": 222, "Tacoma": 213,
+    "Vancouver": 183, "Bellevue": 148, "Kent": 130, "Everett": 112,
+    # West Virginia
+    "Charleston": 49, "Huntington": 46, "Morgantown": 30,
+    "Parkersburg": 30, "Wheeling": 27,
+    # Wisconsin
+    "Milwaukee": 577, "Madison": 269, "Green Bay": 107,
+    "Kenosha": 100, "Racine": 78,
+    # Wyoming
+    "Cheyenne": 64, "Casper": 57, "Laramie": 32,
+}
+
+# Approximate state populations (thousands) — 2023 estimates
+STATE_POPULATIONS = {
+    "AL": 5100, "AK": 740, "AZ": 7400, "AR": 3050, "CA": 39500,
+    "CO": 5800, "CT": 3610, "DE": 1000, "FL": 22600, "GA": 10900,
+    "HI": 1440, "ID": 1900, "IL": 12800, "IN": 6800, "IA": 3200,
+    "KS": 2940, "KY": 4500, "LA": 4700, "ME": 1395, "MD": 6200,
+    "MA": 7030, "MI": 10000, "MN": 5720, "MS": 2980, "MO": 6200,
+    "MT": 1120, "NE": 1960, "NV": 3200, "NH": 1400, "NJ": 9290,
+    "NM": 2120, "NY": 20200, "NC": 10600, "ND": 780, "OH": 11800,
+    "OK": 4000, "OR": 4300, "PA": 13000, "RI": 1100, "SC": 5300,
+    "SD": 900, "TN": 7100, "TX": 30000, "UT": 3400, "VT": 650,
+    "VA": 8700, "WA": 7800, "WV": 1800, "WI": 5900, "WY": 580,
+}
+
+# Simple climate zone tag per state (for city context)
+STATE_CLIMATE = {
+    "AK": "subarctic", "HI": "tropical",
+    "FL": "hot-humid", "LA": "hot-humid", "MS": "hot-humid",
+    "AL": "hot-humid", "GA": "hot-humid", "SC": "mixed-humid",
+    "TX": "hot-mixed", "AZ": "hot-dry", "NM": "hot-dry",
+    "NV": "hot-dry", "CA": "marine/semi-arid",
+    "OR": "marine", "WA": "marine",
+    "ID": "cold", "MT": "cold", "WY": "cold",
+    "ND": "very-cold", "SD": "cold", "MN": "very-cold",
+    "WI": "cold", "MI": "cold", "ME": "very-cold",
+    "VT": "very-cold", "NH": "cold",
+    "NY": "mixed-humid", "PA": "mixed-humid", "OH": "mixed-humid",
+    "IN": "mixed-humid", "IL": "cold",
+    "CO": "cold", "UT": "cold",
+    "KS": "mixed-dry", "NE": "mixed-dry",
+    "MO": "mixed-humid", "AR": "mixed-humid", "TN": "mixed-humid",
+    "KY": "mixed-humid", "VA": "mixed-humid", "NC": "mixed-humid",
+    "WV": "mixed-humid", "MD": "mixed-humid", "DE": "mixed-humid",
+    "NJ": "mixed-humid", "CT": "mixed-humid", "RI": "mixed-humid",
+    "MA": "cold", "IA": "cold", "OK": "mixed-dry",
+}
+
 # Average retail electricity price cents/kWh by state (approximate)
 STATE_RETAIL_PRICE = {
     "AL": 12.2, "AK": 22.1, "AZ": 12.1, "AR": 10.4, "CA": 22.0,
@@ -181,7 +402,40 @@ class PowerGridScraper:
 
         grid = self._fetch_eia_state_data(state_abbrev)
         result.update(grid)
+        result["city_stats"] = self._get_city_stats(city, state_abbrev, result)
         return result
+
+    def _get_city_stats(self, city: str, state_abbrev: str, grid_data: Dict) -> Dict:
+        """
+        Estimate city-level grid metrics by scaling state data proportionally
+        to the city's share of the state population.
+        """
+        city_pop_k = CITY_POPULATIONS.get(city, 150)
+        state_pop_k = STATE_POPULATIONS.get(state_abbrev, 5000)
+        share = city_pop_k / max(state_pop_k, 1)
+        share_pct = round(share * 100, 2)
+
+        peak = grid_data.get("peak_demand_mw", 0)
+        avg = grid_data.get("avg_demand_mw", 0)
+        cap = grid_data.get("total_capacity_mw", 0)
+        sales = grid_data.get("annual_sales_gwh") or 0
+        price = grid_data.get("retail_price_cents_kwh")
+
+        return {
+            "city_population_k": city_pop_k,
+            "state_population_k": state_pop_k,
+            "city_share_pct": share_pct,
+            "estimated_capacity_mw": round(cap * share),
+            "estimated_peak_demand_mw": round(peak * share),
+            "estimated_avg_demand_mw": round(avg * share),
+            "estimated_annual_sales_gwh": round(sales * share) if sales else None,
+            "retail_price_cents_kwh": price,
+            "climate_zone": STATE_CLIMATE.get(state_abbrev, "mixed"),
+            "note": (
+                f"City estimates scaled from state EIA data "
+                f"({city_pop_k:,}K / {state_pop_k:,}K state pop = {share_pct}% share)"
+            ),
+        }
 
     def _build_historical_data(self, state_abbrev: str) -> list:
         """

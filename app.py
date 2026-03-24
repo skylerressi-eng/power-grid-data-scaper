@@ -83,6 +83,9 @@ def api_analyze():
     body = request.get_json(silent=True) or {}
     state = body.get("state", "").strip()
     city = body.get("city", "").strip()
+    # Allow the UI to supply an API key directly (stored in browser localStorage)
+    request_eia_key = (body.get("eia_api_key") or "").strip()
+    effective_eia_key = request_eia_key or EIA_API_KEY
 
     if not state or not city:
         return jsonify({"error": "Both 'state' and 'city' are required"}), 400
@@ -91,11 +94,14 @@ def api_analyze():
     if not state_abbrev:
         return jsonify({"error": f"Unknown state: {state}"}), 400
 
-    logger.info(f"Analyzing grid for {city}, {state} ({state_abbrev})")
+    logger.info(
+        f"Analyzing grid for {city}, {state} ({state_abbrev}) | "
+        f"EIA key: {'UI-supplied' if request_eia_key else 'env' if EIA_API_KEY else 'none (simulated)'}"
+    )
 
     try:
         scraper = PowerGridScraper(
-            eia_api_key=EIA_API_KEY,
+            eia_api_key=effective_eia_key,
             openei_api_key=OPENEI_API_KEY,
         )
         grid_data = scraper.get_grid_data(state, city, state_abbrev)
@@ -108,6 +114,7 @@ def api_analyze():
             "city": city,
             "state_abbrev": state_abbrev,
             "provider": grid_data.get("provider"),
+            "city_stats": grid_data.get("city_stats"),
             "grid": {
                 "generation_mix": grid_data.get("generation_mix"),
                 "total_capacity_mw": grid_data.get("total_capacity_mw"),
