@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Power Grid Analyzer</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <div>
+        <h1>Power Grid Analyzer</h1>
+        <p class="tagline">Scrape · Optimize · Visualize US Power Grid Data</p>
+      </div>
+    </div>
+    <div class="data-badge">
+      <span class="badge-dot"></span>
+      <span id="data-source-label">EIA + OpenEI Data</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ───────────────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- Controls -->
+  <section class="controls-section">
+    <div class="card controls-card">
+      <h2 class="section-title">Select Location</h2>
+      <div class="controls-row">
+        <div class="select-group">
+          <label for="state-select">State</label>
+          <select id="state-select">
+            <option value="">— Select State —</option>
+          </select>
+        </div>
+        <div class="select-group">
+          <label for="city-select">City</label>
+          <select id="city-select" disabled>
+            <option value="">— Select City —</option>
+          </select>
+        </div>
+        <button id="analyze-btn" class="btn-primary" disabled>
+          <span id="btn-label">Analyze Grid</span>
+          <span id="btn-spinner" class="spinner hidden"></span>
+        </button>
+      </div>
+      <p class="helper-text">
+        Fetches real grid data from the EIA API and OpenEI utility registry.
+        Add your <code>EIA_API_KEY</code> in <code>.env</code> for live generation data.
+      </p>
+    </div>
+  </section>
+
+  <!-- Results (hidden until analyzed) -->
+  <div id="results" class="hidden">
+
+    <!-- Provider & Grid Overview -->
+    <section class="two-col">
+
+      <div class="card">
+        <h3 class="card-title">Utility Provider</h3>
+        <div class="provider-info">
+          <div class="provider-name" id="provider-name">—</div>
+          <div class="provider-meta" id="provider-meta"></div>
+          <div class="provider-tag" id="provider-all"></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="stat-label">Retail Price</div>
+            <div class="stat-value" id="retail-price">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Annual Sales</div>
+            <div class="stat-value" id="annual-sales">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Data Source</div>
+            <div class="stat-value small" id="data-src">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Grid Overview</h3>
+        <div class="stat-grid">
+          <div class="stat-box accent-blue">
+            <div class="stat-label">Total Capacity</div>
+            <div class="stat-value" id="total-capacity">—</div>
+            <div class="stat-unit">MW</div>
+          </div>
+          <div class="stat-box accent-orange">
+            <div class="stat-label">Peak Demand</div>
+            <div class="stat-value" id="peak-demand">—</div>
+            <div class="stat-unit">MW</div>
+          </div>
+          <div class="stat-box accent-green">
+            <div class="stat-label">Reserve Margin</div>
+            <div class="stat-value" id="reserve-margin">—</div>
+            <div class="stat-unit">%</div>
+          </div>
+          <div class="stat-box accent-teal">
+            <div class="stat-label">Renewables (Avg)</div>
+            <div class="stat-value" id="renewable-pct">—</div>
+            <div class="stat-unit">%</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Charts -->
+    <section class="two-col">
+
+      <div class="card">
+        <h3 class="card-title">Current Generation Mix</h3>
+        <div class="chart-wrap">
+          <canvas id="gen-mix-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Optimized Dispatch (Peak vs. Average)</h3>
+        <div class="chart-wrap">
+          <canvas id="dispatch-chart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Cost & Emissions -->
+    <section class="three-col">
+      <div class="card">
+        <h3 class="card-title">Operating Costs</h3>
+        <div class="metric-list">
+          <div class="metric-item">
+            <span class="metric-label">Peak Hour Cost</span>
+            <span class="metric-value" id="peak-cost">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Avg Hour Cost</span>
+            <span class="metric-value" id="avg-cost">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Annual Op. Cost</span>
+            <span class="metric-value" id="annual-cost">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">Emissions</h3>
+        <div class="metric-list">
+          <div class="metric-item">
+            <span class="metric-label">Peak CO₂/hr</span>
+            <span class="metric-value" id="peak-co2">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Annual CO₂</span>
+            <span class="metric-value" id="annual-co2">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Carbon Intensity</span>
+            <span class="metric-value" id="carbon-intensity">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">Optimization Status</h3>
+        <div class="metric-list">
+          <div class="metric-item">
+            <span class="metric-label">Converged</span>
+            <span class="metric-value" id="opt-converged">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Renewable (Peak)</span>
+            <span class="metric-value" id="renew-peak">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Avg Load Factor</span>
+            <span class="metric-value" id="load-factor">—</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dispatch Table -->
+    <section>
+      <div class="card">
+        <h3 class="card-title">Generator Dispatch Schedule</h3>
+        <div class="table-wrap">
+          <table id="dispatch-table">
+            <thead>
+              <tr>
+                <th>Generator</th>
+                <th>Fuel</th>
+                <th>Capacity (MW)</th>
+                <th>Peak Dispatch (MW)</th>
+                <th>Avg Dispatch (MW)</th>
+                <th>Peak Utilization</th>
+                <th>Renewable</th>
+                <th>CO₂ (lbs/MWh)</th>
+              </tr>
+            </thead>
+            <tbody id="dispatch-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section>
+      <div class="card">
+        <h3 class="card-title">Optimization Recommendations</h3>
+        <div id="recommendations"></div>
+      </div>
+    </section>
+
+  </div><!-- /#results -->
+
+  <!-- Error banner -->
+  <div id="error-banner" class="hidden error-banner">
+    <strong>Error:</strong> <span id="error-text"></span>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    Data: <a href="https://www.eia.gov/opendata/" target="_blank">U.S. EIA Open Data API</a>
+    &amp; <a href="https://openei.org/wiki/Utility_Rate_Database" target="_blank">OpenEI Utility Registry</a>
+    &nbsp;·&nbsp; Economic dispatch solved via SLSQP optimization
+  </p>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
