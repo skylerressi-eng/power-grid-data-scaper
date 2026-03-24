@@ -127,6 +127,22 @@ STATE_CAPACITY = {
     "WY": {"capacity": 8000, "peak": 5000, "avg_load": 3250},
 }
 
+# National generation trend adjustment factors vs. 2023 baseline
+# Approximated from EIA Electric Power Annual data
+HISTORICAL_TREND_FACTORS = {
+    2023: {"solar": 1.000, "wind": 1.000, "coal": 1.000, "natural-gas": 1.000,
+           "nuclear": 1.000, "hydro": 1.000, "geothermal": 1.000, "other": 1.000,
+           "price_mult": 1.000, "capacity_mult": 1.000},
+    2022: {"solar": 0.790, "wind": 0.912, "coal": 1.074, "natural-gas": 1.026,
+           "nuclear": 1.010, "hydro": 0.978, "geothermal": 1.000, "other": 1.010,
+           "price_mult": 1.017, "capacity_mult": 0.966},
+    2021: {"solar": 0.622, "wind": 0.821, "coal": 1.153, "natural-gas": 1.051,
+           "nuclear": 1.017, "hydro": 1.022, "geothermal": 1.000, "other": 1.022,
+           "price_mult": 0.858, "capacity_mult": 0.933},
+}
+
+RENEWABLE_FUELS = {"solar", "wind", "hydro", "geothermal"}
+
 # Average retail electricity price cents/kWh by state (approximate)
 STATE_RETAIL_PRICE = {
     "AL": 12.2, "AK": 22.1, "AZ": 12.1, "AR": 10.4, "CA": 22.0,
@@ -160,11 +176,61 @@ class PowerGridScraper:
             "state_abbrev": state_abbrev,
             "provider": self._get_utility_provider(city, state, state_abbrev),
             "data_source": "simulated",
+            "historical": self._build_historical_data(state_abbrev),
         }
 
         grid = self._fetch_eia_state_data(state_abbrev)
         result.update(grid)
         return result
+
+    def _build_historical_data(self, state_abbrev: str) -> list:
+        """
+        Generate 3-year historical data (2021–2023) based on known EIA state profiles
+        and national year-over-year trend factors. Available without an API key.
+        """
+        profile = STATE_GENERATION_PROFILES.get(state_abbrev, {
+            "natural-gas": 40, "coal": 20, "nuclear": 15,
+            "wind": 10, "solar": 8, "hydro": 5, "other": 2,
+        })
+        cap = STATE_CAPACITY.get(state_abbrev, {
+            "capacity": 10000, "peak": 8000, "avg_load": 5200,
+        })
+        base_price = STATE_RETAIL_PRICE.get(state_abbrev, 12.0)
+
+        historical = []
+        for year in [2021, 2022, 2023]:
+            f = HISTORICAL_TREND_FACTORS[year]
+
+            # Scale each fuel type by its trend factor and renormalize to 100 %
+            raw_mix = {fuel: pct * f.get(fuel, 1.0) for fuel, pct in profile.items()}
+            total = sum(raw_mix.values())
+            adj_mix = (
+                {k: round(v / total * 100, 1) for k, v in raw_mix.items()}
+                if total > 0 else dict(profile)
+            )
+
+            cm = f["capacity_mult"]
+            adj_cap = round(cap["capacity"] * cm)
+            adj_peak = round(cap["peak"] * cm)
+            adj_avg = round(cap["avg_load"] * cm)
+            adj_price = round(base_price * f["price_mult"], 2)
+            adj_sales = round(adj_avg * 8760 / 1000)
+            renew_pct = round(
+                sum(v for k, v in adj_mix.items() if k in RENEWABLE_FUELS), 1
+            )
+
+            historical.append({
+                "year": year,
+                "generation_mix": adj_mix,
+                "total_capacity_mw": adj_cap,
+                "peak_demand_mw": adj_peak,
+                "avg_demand_mw": adj_avg,
+                "retail_price_cents_kwh": adj_price,
+                "annual_sales_gwh": adj_sales,
+                "renewable_pct": renew_pct,
+            })
+
+        return historical
 
     def _get_utility_provider(self, city: str, state: str, state_abbrev: str) -> Dict:
         """Look up utility provider via OpenEI API."""

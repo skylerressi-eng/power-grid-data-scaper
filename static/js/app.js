@@ -18,6 +18,7 @@ const FUEL_COLORS = {
 
 let genMixChart = null;
 let dispatchChart = null;
+let historyMixChart = null;
 
 // ── DOM refs ──────────────────────────────────────────────────────────────
 const stateSelect   = document.getElementById('state-select');
@@ -155,6 +156,7 @@ function renderResults(data) {
   // Charts
   renderGenMixChart(grid.generation_mix);
   renderDispatchChart(opt.dispatch_table);
+  renderHistoricalSection(data.historical);
 
   // Dispatch table
   renderDispatchTable(opt.dispatch_table);
@@ -264,6 +266,90 @@ function renderDispatchChart(dispatchTable) {
         },
       },
     },
+  });
+}
+
+// ── Historical Trends ─────────────────────────────────────────────────────
+function renderHistoricalSection(historical) {
+  if (!historical || !historical.length) return;
+
+  const years = historical.map(h => h.year);
+
+  // Collect all fuel types that appear with ≥1% share in any year
+  const allFuels = [...new Set(historical.flatMap(h => Object.keys(h.generation_mix)))];
+  const activeFuels = allFuels.filter(f =>
+    Math.max(...historical.map(h => h.generation_mix[f] || 0)) >= 1.0
+  );
+
+  const datasets = activeFuels.map(fuel => {
+    const color = FUEL_COLORS[fuel] || '#484f58';
+    return {
+      label: fuel.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      data: historical.map(h => h.generation_mix[fuel] || 0),
+      borderColor: color,
+      backgroundColor: color + '33',
+      tension: 0.35,
+      fill: false,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      borderWidth: 2,
+    };
+  });
+
+  if (historyMixChart) historyMixChart.destroy();
+  const ctx = document.getElementById('history-mix-chart').getContext('2d');
+  historyMixChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: years, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          grid: { color: '#21262d' },
+          ticks: { callback: v => v + '%' },
+          title: { display: true, text: '% of Generation', color: '#8b949e' },
+        },
+        x: { grid: { color: '#21262d' } },
+      },
+      plugins: {
+        legend: { labels: { font: { size: 10 }, color: '#8b949e', boxWidth: 12 } },
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%` },
+        },
+      },
+    },
+  });
+
+  // Stats table
+  const container = document.getElementById('history-stats');
+  container.innerHTML = '';
+  historical.forEach(h => {
+    const el = document.createElement('div');
+    el.className = 'history-year-block';
+    el.innerHTML = `
+      <div class="history-year-label">${h.year}</div>
+      <div class="history-year-stats">
+        <div class="history-stat">
+          <span class="history-stat-label">Retail Price</span>
+          <span class="history-stat-value">${h.retail_price_cents_kwh}¢/kWh</span>
+        </div>
+        <div class="history-stat">
+          <span class="history-stat-label">Total Capacity</span>
+          <span class="history-stat-value">${fmt(h.total_capacity_mw)} MW</span>
+        </div>
+        <div class="history-stat">
+          <span class="history-stat-label">Annual Sales</span>
+          <span class="history-stat-value">${fmt(h.annual_sales_gwh)} GWh</span>
+        </div>
+        <div class="history-stat">
+          <span class="history-stat-label">Renewables Share</span>
+          <span class="history-stat-value accent-green">${h.renewable_pct}%</span>
+        </div>
+      </div>
+    `;
+    container.appendChild(el);
   });
 }
 

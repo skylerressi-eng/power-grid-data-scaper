@@ -118,6 +118,7 @@ def api_analyze():
                 "data_source": grid_data.get("data_source"),
                 "data_year": grid_data.get("data_year"),
             },
+            "historical": grid_data.get("historical", []),
             "optimization": optimization,
         })
         return jsonify(payload)

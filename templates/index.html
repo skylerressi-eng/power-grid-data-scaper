@@ -54,6 +54,9 @@
       <p class="helper-text">
         Fetches real grid data from the EIA API and OpenEI utility registry.
         Add your <code>EIA_API_KEY</code> in <code>.env</code> for live generation data.
+        Get a <strong>free</strong> key at
+        <a href="https://www.eia.gov/opendata/" target="_blank" rel="noopener">eia.gov/opendata</a>
+        (instant registration, no credit card).
       </p>
     </div>
   </section>
@@ -132,6 +135,20 @@
         </div>
       </div>
 
+    </section>
+
+    <!-- Historical Trends (2021–2023) -->
+    <section class="two-col">
+      <div class="card">
+        <h3 class="card-title">Generation Mix Trend (2021–2023)</h3>
+        <div class="chart-wrap">
+          <canvas id="history-mix-chart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">3-Year Grid Metrics</h3>
+        <div id="history-stats" class="history-stats"></div>
+      </div>
     </section>
 
     <!-- Cost & Emissions -->
