@@ -415,19 +415,26 @@ class PowerGridOptimizer:
         if coal_gens:
             coal_cap = sum(g.capacity_mw for g in coal_gens)
             annual_savings = coal_cap * 0.5 * 8760 * 0.02  # rough estimate
+            # Coal-specific CO2: use avg utilization of ~65% of capacity
+            coal_annual_co2_tons = sum(
+                g.capacity_mw * 0.65 * g.emissions_lbs_co2_per_mwh * 8760 / 2000
+                for g in coal_gens
+            )
             recs.append({
                 "priority": "medium",
                 "category": "Emissions Reduction",
                 "title": "Coal Fleet Transition Opportunity",
                 "detail": (
-                    f"{coal_cap:.0f} MW of coal capacity contributes {annual_co2_tons:,.0f} tons CO2/year. "
+                    f"{coal_cap:.0f} MW of coal capacity contributes an estimated {coal_annual_co2_tons:,.0f} tons CO2/year. "
                     f"Replacing coal with combined-cycle natural gas could cut emissions ~60% and "
                     f"save an estimated ${annual_savings:,.0f}/year in operating costs."
                 ),
             })
 
         # 5. Demand response
-        dr_savings = avg_result["total_cost_per_hour"] * 0.05 * 8760
+        # DR applies during peak hours (~876 hrs/year = top 10%); saves marginal peaking cost
+        dr_savings = (peak_result["total_cost_per_hour"] - avg_result["total_cost_per_hour"]) * 0.05 * 876
+        dr_savings = max(dr_savings, avg_result["total_cost_per_hour"] * 0.01 * 876)  # floor
         recs.append({
             "priority": "medium",
             "category": "Demand Response",
