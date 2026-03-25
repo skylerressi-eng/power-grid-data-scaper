@@ -88,7 +88,7 @@ US_CITIES = {
         "Palm Coast", "Plantation", "Sunrise", "Lauderhill", "Homestead",
         "Kissimmee", "Sanford", "Ocala", "Daytona Beach", "Melbourne",
         "Sarasota", "Bradenton", "Fort Myers", "Naples", "Bonita Springs",
-        "Pensacola", "Panama City", "Tallahassee", "St. Cloud", "Apopka",
+        "Pensacola", "Panama City", "St. Cloud", "Apopka",
     ],
     "Georgia": [
         "Atlanta", "Columbus", "Augusta", "Macon", "Savannah",
@@ -190,7 +190,6 @@ US_CITIES = {
         "Albany", "New Rochelle", "Mount Vernon", "Schenectady", "Utica",
         "White Plains", "Hempstead", "Troy", "Niagara Falls", "Binghamton",
         "Brooklyn", "Queens", "Bronx", "Staten Island", "Manhattan",
-        "Long Island City", "Flushing", "Jamaica", "Astoria", "Harlem",
         "Ithaca", "Poughkeepsie", "Newburgh", "Middletown", "Kingston",
         "Saratoga Springs", "Plattsburgh", "Watertown", "Rome", "Oswego",
     ],

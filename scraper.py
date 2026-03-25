@@ -328,6 +328,192 @@ CITY_POPULATIONS = {
     "Kenosha": 100, "Racine": 78,
     # Wyoming
     "Cheyenne": 64, "Casper": 57, "Laramie": 32,
+    # ── Additional cities (all states) ─────────────────────────────────────
+    # Alaska
+    "Bethel": 6, "Palmer": 7,
+    # Delaware
+    "Milford": 11, "Seaford": 8, "Elsmere": 6, "New Castle": 6,
+    # Florida extras (original list)
+    "Coral Springs": 133, "Palm Bay": 119, "West Palm Beach": 117,
+    "Clearwater": 115, "Lakeland": 112, "Pompano Beach": 108,
+    # Florida extras (new cities added)
+    "Boca Raton": 99, "Davie": 105, "Miami Gardens": 113,
+    "Deerfield Beach": 80, "Deltona": 92, "Palm Coast": 90,
+    "Plantation": 93, "Sunrise": 94, "Lauderhill": 74, "Homestead": 75,
+    "Kissimmee": 72, "Sanford": 62, "Ocala": 63, "Daytona Beach": 69,
+    "Melbourne": 84, "Sarasota": 57, "Bradenton": 58, "Fort Myers": 86,
+    "Naples": 22, "Bonita Springs": 56, "Pensacola": 54,
+    "Panama City": 37, "St. Cloud": 57, "Apopka": 54,
+    # Georgia extras
+    "Johns Creek": 82, "Alpharetta": 65, "Marietta": 60,
+    "Valdosta": 57, "Smyrna": 54, "Alpharetta": 65,
+    # Hawaii extras
+    "Kaneohe": 35, "Mililani Town": 28, "Kahului": 27,
+    "Ewa Gentry": 22, "Kihei": 22,
+    # Idaho extras
+    "Twin Falls": 51, "Lewiston": 33, "Post Falls": 35,
+    # Illinois extras
+    "Decatur": 70, "Bolingbrook": 73, "Bloomington": 78,
+    # Indiana extras
+    "Lafayette": 72, "Terre Haute": 59, "Kokomo": 58,
+    "Anderson": 55, "Noblesville": 71, "Muncie": 67,
+    # Iowa extras
+    "Council Bluffs": 62, "Ames": 66, "West Des Moines": 66, "Dubuque": 59,
+    # Kansas extras
+    "Shawnee": 64, "Manhattan": 52, "Lenexa": 54, "Salina": 46,
+    # Kentucky extras
+    "Hopkinsville": 32, "Richmond": 33, "Florence": 33,
+    "Georgetown": 36, "Henderson": 28,
+    # Louisiana extras
+    "Lake Charles": 78, "Kenner": 67, "Bossier City": 68,
+    "Monroe": 48, "Alexandria": 48, "Houma": 33,
+    # Maine extras
+    "Biddeford": 22, "Sanford": 20, "Augusta": 19, "Saco": 20, "Westbrook": 19,
+    # Maryland extras
+    "Hagerstown": 43, "Annapolis": 41, "College Park": 32,
+    "Salisbury": 33, "Laurel": 26,
+    # Massachusetts extras
+    "Newton": 88, "Somerville": 81, "Framingham": 73,
+    "Haverhill": 67, "Fall River": 94,
+    # Michigan extras
+    "Livonia": 95, "Westland": 84, "Troy": 82, "Farmington Hills": 81,
+    "Kalamazoo": 72, "Wyoming": 74, "Southfield": 73,
+    # Minnesota extras — fix "Saint Paul" spelling used in city dropdown
+    "Saint Paul": 308, "Saint Cloud": 67, "Eagan": 67, "Woodbury": 73,
+    "Coon Rapids": 63, "Burnsville": 61, "Blaine": 65, "Lakeville": 67,
+    # Mississippi extras
+    "Meridian": 39, "Tupelo": 37, "Olive Branch": 40,
+    "Horn Lake": 28, "Pearl": 26,
+    # Missouri extras — fix "Saint Louis" spelling
+    "Saint Louis": 293, "Lee's Summit": 102, "O'Fallon": 91,
+    "Saint Joseph": 77, "Saint Charles": 74, "Blue Springs": 56,
+    # Montana extras
+    "Helena": 33, "Kalispell": 25, "Havre": 9, "Anaconda": 9, "Miles City": 8,
+    # Nebraska extras
+    "Fremont": 26, "Hastings": 24, "North Platte": 24, "Norfolk": 24,
+    # Nevada extras
+    "Carson City": 57, "Fernley": 22, "Elko": 21, "Mesquite": 21,
+    "Boulder City": 16,
+    # New Hampshire extras
+    "Derry": 33, "Dover": 31, "Rochester": 32, "Salem": 30,
+    "Merrimack": 26, "Hudson": 25, "Londonderry": 26,
+    # New Jersey extras
+    "Clifton": 85, "Camden": 73, "Brick": 74, "Cherry Hill": 71,
+    "Passaic": 70, "Hamilton": 92, "Trenton": 90,
+    # New Mexico extras
+    "Farmington": 45, "Clovis": 39, "Hobbs": 38,
+    "Alamogordo": 31, "Carlsbad": 30,
+    # New York extras
+    "Brooklyn": 2600, "Queens": 2300, "Bronx": 1420,
+    "Staten Island": 480, "Manhattan": 1630,
+    "Ithaca": 31, "Poughkeepsie": 32, "Newburgh": 28,
+    "Middletown": 29, "Kingston": 24, "Saratoga Springs": 29,
+    "Plattsburgh": 20, "Watertown": 26, "Rome": 32, "Oswego": 18,
+    "Binghamton": 47, "Hempstead": 55, "Mount Vernon": 73,
+    "Niagara Falls": 49, "Schenectady": 65, "Utica": 60, "White Plains": 58,
+    # North Carolina extras
+    "Concord": 105, "Asheville": 94, "Gastonia": 82,
+    "Chapel Hill": 61, "Greenville": 92, "Rocky Mount": 55,
+    # North Dakota extras
+    "Williston": 28, "Dickinson": 24, "Mandan": 24,
+    "Jamestown": 15, "Wahpeton": 8,
+    # Ohio extras
+    "Hamilton": 63, "Springfield": 58, "Kettering": 56,
+    "Elyria": 54, "Lakewood": 51,
+    # Oklahoma extras
+    "Lawton": 92, "Moore": 60, "Midwest City": 58,
+    "Enid": 50, "Stillwater": 48,
+    # Oregon extras
+    "Medford": 84, "Corvallis": 59,
+    # Pennsylvania extras
+    "Harrisburg": 50, "York": 44, "Altoona": 44,
+    "Wilkes-Barre": 41, "Chester": 34, "Norristown": 34, "State College": 41,
+    # Rhode Island extras
+    "Coventry": 35, "Cumberland": 35, "North Providence": 32, "West Warwick": 29,
+    # South Carolina extras
+    "Greenville": 72, "Summerville": 50, "Sumter": 41,
+    "Goose Creek": 43, "Hilton Head Island": 41,
+    # South Dakota extras
+    "Brookings": 24, "Watertown": 22, "Mitchell": 15,
+    "Yankton": 15, "Pierre": 14, "Huron": 13, "Vermillion": 11,
+    # Tennessee extras
+    "Jackson": 68, "Johnson City": 68, "Bartlett": 58,
+    "Hendersonville": 57, "Kingsport": 53, "Collierville": 51,
+    "Smyrna": 49, "Cleveland": 45,
+    # Texas extras
+    "Carrollton": 135, "Killeen": 153, "Midland": 132, "Waco": 139,
+    "Denton": 139, "Abilene": 125, "Beaumont": 113, "Round Rock": 133,
+    "Sugar Land": 118, "League City": 106, "Richardson": 119,
+    "Wichita Falls": 103, "Tyler": 105, "College Station": 120,
+    "Allen": 105, "Pearland": 125, "Odessa": 117, "Lewisville": 106,
+    "San Angelo": 99, "Edinburg": 101, "Flower Mound": 78,
+    "Longview": 82, "McAllen": 143, "Cedar Park": 77, "Georgetown": 75,
+    "Baytown": 78, "North Richland Hills": 70, "Mission": 84,
+    "Harlingen": 65, "Rowlett": 66,
+    # Utah extras
+    "Sandy": 96, "Ogden": 87, "St. George": 90, "Layton": 78, "Millcreek": 62,
+    # Vermont extras
+    "Essex Junction": 24, "Barre": 8, "Montpelier": 8,
+    "Winooski": 8, "St. Albans": 7, "Newport": 5, "Vergennes": 2,
+    # Virginia extras
+    "Lynchburg": 82, "Harrisonburg": 54, "Charlottesville": 46,
+    "Danville": 42, "Manassas": 41, "Suffolk": 93, "Portsmouth": 95,
+    # Washington extras
+    "Kennewick": 82, "Federal Way": 96, "Yakima": 96,
+    "Redmond": 68, "Marysville": 67,
+    # West Virginia extras
+    "Fairmont": 18, "Martinsburg": 20, "Beckley": 17,
+    "Clarksburg": 16, "Weirton": 19,
+    # Wisconsin extras
+    "Appleton": 76, "Waukesha": 72, "Oshkosh": 66, "Eau Claire": 69,
+    "Janesville": 65, "West Allis": 60, "La Crosse": 51,
+    "Sheboygan": 50, "Wauwatosa": 47, "Fond du Lac": 43,
+    # Wyoming extras
+    "Rock Springs": 23, "Sheridan": 18, "Green River": 12,
+    "Evanston": 12, "Riverton": 11, "Jackson": 10, "Gillette": 33,
+    # Illinois extras
+    "Cicero": 84,
+    # Ohio extras
+    "Lorain": 63, "Youngstown": 60,
+    # Oregon extras
+    "Beaverton": 100,
+    # Rhode Island extras
+    "Woonsocket": 43,
+    # Tennessee extras
+    "Franklin": 83, "Murfreesboro": 152,
+    # Washington extras
+    "Bellingham": 92, "Kirkland": 92, "Renton": 106,
+    # California — Bay Area & Peninsula
+    "Palo Alto": 67, "Los Altos": 31, "Mountain View": 82, "Sunnyvale": 155,
+    "Cupertino": 60, "Los Gatos": 32, "Saratoga": 31, "Campbell": 42,
+    "Menlo Park": 33, "Redwood City": 85, "San Mateo": 104,
+    "Burlingame": 31, "San Carlos": 29, "Belmont": 27, "East Palo Alto": 29,
+    "Atherton": 7, "Foster City": 33, "Millbrae": 22, "San Bruno": 44,
+    "South San Francisco": 66,
+    # California — East & North Bay
+    "Daly City": 107, "Hayward": 159, "Concord": 129, "Antioch": 116,
+    "Richmond": 116, "Berkeley": 124, "Walnut Creek": 70, "Pleasanton": 82,
+    "Livermore": 90, "San Ramon": 84, "Union City": 75, "Newark": 47,
+    "Alameda": 78, "El Cerrito": 25, "Novato": 54, "San Rafael": 60,
+    "Petaluma": 60, "Santa Rosa": 178, "Napa": 80, "Vallejo": 121,
+    "Fairfield": 122, "Vacaville": 102,
+    # California — Central Valley & Central Coast
+    "Davis": 67, "Woodland": 60, "Chico": 103, "Redding": 93,
+    "Roseville": 147, "Elk Grove": 176, "Folsom": 82, "Rocklin": 68,
+    "Turlock": 72, "Merced": 84, "Visalia": 136, "Hanford": 56,
+    "Santa Cruz": 65, "Capitola": 10, "Scotts Valley": 12,
+    "Monterey": 30, "Salinas": 163, "San Luis Obispo": 46,
+    "Paso Robles": 32, "Santa Maria": 107,
+    # California — Southern California extras
+    "Santa Barbara": 88, "Ventura": 112, "Thousand Oaks": 127,
+    "Simi Valley": 124, "Glendale": 196, "Pasadena": 141,
+    "Torrance": 144, "Santa Monica": 94, "Beverly Hills": 33,
+    "Burbank": 103, "El Monte": 116, "Pomona": 151,
+    "Rancho Cucamonga": 177, "Victorville": 134, "Garden Grove": 174,
+    "Fullerton": 143, "Orange": 139, "Tustin": 81, "Mission Viejo": 95,
+    "Lake Forest": 83, "El Cajon": 100, "Escondido": 152,
+    "Oceanside": 175, "Carlsbad": 114, "Vista": 101,
+    "San Marcos": 98, "Murrieta": 115, "Temecula": 113,
 }
 
 # Approximate state populations (thousands) — 2023 estimates
