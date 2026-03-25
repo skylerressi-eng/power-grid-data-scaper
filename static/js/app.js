@@ -523,6 +523,10 @@ analyzeBtn.addEventListener('click', async function analyzeHandler() {
       s.classList.add('section-animate');
     });
     resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Automatically run 100 simulations so the Improve section has data right away
+    const maxSimsInput = document.getElementById('max-sims-input');
+    if (maxSimsInput) maxSimsInput.value = 100;
+    runSimulations();
   } catch (e) {
     showError(e.message);
   } finally {
