@@ -49,16 +49,25 @@ const errorText     = document.getElementById('error-text');
 // ── State change → load cities ────────────────────────────────────────────
 stateSelect.addEventListener('change', async () => {
   const state = stateSelect.value;
-  citySelect.innerHTML = '<option value="">— Select City —</option>';
+  citySelect.innerHTML = '<option value="" disabled selected>Loading cities…</option>';
   citySelect.disabled = true;
   analyzeBtn.disabled = true;
+  hideError();
 
-  if (!state) return;
+  if (!state) {
+    citySelect.innerHTML = '<option value="">— Select City —</option>';
+    return;
+  }
 
   try {
     const res = await fetch(`/api/cities?state=${encodeURIComponent(state)}`);
     const cities = await res.json();
     if (!Array.isArray(cities)) throw new Error(cities.error || 'Unknown error');
+    citySelect.innerHTML = '<option value="">— Select City —</option>';
+    if (cities.length === 0) {
+      citySelect.innerHTML = '<option value="">No cities found</option>';
+      return;
+    }
     cities.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c;
@@ -67,6 +76,7 @@ stateSelect.addEventListener('change', async () => {
     });
     citySelect.disabled = false;
   } catch (e) {
+    citySelect.innerHTML = '<option value="">— Select City —</option>';
     showError('Failed to load cities: ' + e.message);
   }
 });
@@ -74,6 +84,14 @@ stateSelect.addEventListener('change', async () => {
 // ── City change → enable button ───────────────────────────────────────────
 citySelect.addEventListener('change', () => {
   analyzeBtn.disabled = !citySelect.value;
+});
+
+// ── Enter key triggers analysis ───────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !analyzeBtn.disabled &&
+      (document.activeElement === citySelect || document.activeElement === stateSelect)) {
+    analyzeBtn.click();
+  }
 });
 
 // ── Analyze button — handled below after API key init ────────────────────
@@ -403,6 +421,7 @@ function setLoading(loading) {
 function showError(msg) {
   errorText.textContent = msg;
   errorBanner.classList.remove('hidden');
+  setTimeout(() => errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
 }
 
 function hideError() {
@@ -504,20 +523,23 @@ analyzeBtn.addEventListener('click', async function analyzeHandler() {
 // ── City Profile ───────────────────────────────────────────────────────────
 function renderCityStats(cs, city, state) {
   if (!cs) return;
-  const pop = cs.city_population_k;
+  const pop = cs.city_population_k || 0;
   document.getElementById('city-profile-label').textContent = `— ${city}, ${state}`;
-  document.getElementById('city-pop').textContent =
-    pop >= 1000 ? (pop / 1000).toFixed(2) + 'M' : pop.toLocaleString() + 'K';
+  document.getElementById('city-pop').textContent = pop
+    ? (pop >= 1000 ? (pop / 1000).toFixed(2) + 'M' : pop.toLocaleString() + 'K')
+    : '—';
   document.getElementById('city-peak').textContent =
-    fmt(cs.estimated_peak_demand_mw) + ' MW';
+    cs.estimated_peak_demand_mw ? fmt(cs.estimated_peak_demand_mw) + ' MW' : '—';
   document.getElementById('city-consumption').textContent =
     cs.estimated_annual_sales_gwh ? fmt(cs.estimated_annual_sales_gwh) + ' GWh/yr' : '—';
   document.getElementById('city-share').textContent =
-    cs.city_share_pct + '% of state';
+    cs.city_share_pct != null ? cs.city_share_pct + '% of state' : '—';
   document.getElementById('city-price').textContent =
     cs.retail_price_cents_kwh ? cs.retail_price_cents_kwh + '¢/kWh' : '—';
   document.getElementById('city-climate').textContent =
-    (cs.climate_zone || '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    cs.climate_zone
+      ? cs.climate_zone.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+      : '—';
   document.getElementById('city-note').textContent = cs.note || '';
 }
 

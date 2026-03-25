@@ -271,11 +271,11 @@ class PowerGridOptimizer:
             avg_dispatch[i] for i in range(len(generators))
             if generators[i].is_renewable
         )
-        renewable_pct_peak = round(renewable_peak / max(peak_load, 1) * 100, 1)
-        renewable_pct_avg = round(renewable_avg / max(avg_load, 1) * 100, 1)
+        renewable_pct_peak = min(100.0, round(renewable_peak / max(peak_load, 1) * 100, 1))
+        renewable_pct_avg = min(100.0, round(renewable_avg / max(avg_load, 1) * 100, 1))
 
         # ── Costs ──────────────────────────────────────────────────────────
-        annual_cost = round(avg_result["total_cost_per_hour"] * 8760, 0)
+        annual_cost = round(max(0, avg_result["total_cost_per_hour"]) * 8760, 0)
         annual_revenue = round(avg_load * price_cents_kwh / 100 * 8760, 0)
 
         # ── Reserve margin ─────────────────────────────────────────────────

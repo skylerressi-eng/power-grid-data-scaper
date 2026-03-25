@@ -352,7 +352,23 @@ select:disabled { opacity: 0.4; cursor: not-allowed; }
 }
 
 /* ── Table ────────────────────────────────────────────────────────────────── */
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+/* Subtle indicator that table scrolls on small screens */
+@media (max-width: 700px) {
+  .table-wrap::after {
+    content: '← scroll →';
+    display: block;
+    text-align: center;
+    font-size: .7rem;
+    color: var(--text-dim);
+    padding: 4px 0 2px;
+  }
+}
 
 table {
   width: 100%;
@@ -370,14 +386,19 @@ thead th {
   text-align: left;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 tbody tr {
   border-bottom: 1px solid var(--border);
-  transition: background .1s;
+  transition: background .12s;
 }
 
-tbody tr:hover { background: var(--surface2); }
+tbody tr:last-child { border-bottom: none; }
+
+tbody tr:hover { background: rgba(88,166,255,.05); }
 
 tbody td {
   padding: 10px 14px;
@@ -626,6 +647,7 @@ footer a:hover { color: var(--blue); }
 
 @media (max-width: 1100px) { .city-profile-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 700px)  { .city-profile-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px)  { .city-profile-grid { grid-template-columns: 1fr; } }
 
 .city-stat-box {
   background: var(--surface2);

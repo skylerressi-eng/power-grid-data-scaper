@@ -24,6 +24,7 @@ OPENEI_BASE = "https://api.openei.org"
 # Realistic state-level generation mix profiles (% of total generation)
 # Source: approximated from EIA state profiles
 STATE_GENERATION_PROFILES = {
+    "DC": {"natural-gas": 72, "solar": 10, "wind": 5, "hydro": 2, "other": 11},
     "AL": {"natural-gas": 28, "nuclear": 26, "coal": 22, "hydro": 10, "solar": 4, "wind": 1, "other": 9},
     "AK": {"natural-gas": 60, "hydro": 22, "coal": 8, "wind": 5, "other": 5},
     "AZ": {"natural-gas": 36, "nuclear": 29, "coal": 14, "solar": 14, "wind": 2, "other": 5},
@@ -78,6 +79,7 @@ STATE_GENERATION_PROFILES = {
 
 # Approximate state-level capacity (MW) and peak demand
 STATE_CAPACITY = {
+    "DC": {"capacity": 2500, "peak": 1800, "avg_load": 1100},
     "AL": {"capacity": 28000, "peak": 22000, "avg_load": 14300},
     "AK": {"capacity": 3000, "peak": 2200, "avg_load": 1430},
     "AZ": {"capacity": 32000, "peak": 26000, "avg_load": 16900},
@@ -471,8 +473,101 @@ CITY_POPULATIONS = {
     # Wyoming extras
     "Rock Springs": 23, "Sheridan": 18, "Green River": 12,
     "Evanston": 12, "Riverton": 11, "Jackson": 10, "Gillette": 33,
+    "Lander": 8, "Cody": 10, "Worland": 5, "Rawlins": 9, "Douglas": 7,
+    # DC
+    "Washington": 689,
+    "Georgetown": 30, "Capitol Hill": 35, "Adams Morgan": 20,
+    "Dupont Circle": 18, "Foggy Bottom": 15, "Navy Yard": 12,
+    "Columbia Heights": 25, "Anacostia": 22, "Petworth": 20,
+    # Alabama extras
+    "Gadsden": 37, "Florence": 40, "Phenix City": 33, "Opelika": 30,
+    "Bessemer": 26, "Homewood": 25, "Vestavia Hills": 37,
+    "Trussville": 24, "Northport": 27, "Prattville": 40,
+    # Arizona extras
+    "Casa Grande": 56, "Sierra Vista": 44, "Prescott": 45,
+    "Apache Junction": 42, "Maricopa": 52, "Queen Creek": 62,
+    "Buckeye": 79, "El Mirage": 33, "Prescott Valley": 48, "Oro Valley": 47,
+    # Arkansas extras
+    "Texarkana": 37, "Russellville": 29, "Benton": 36,
+    "Hot Springs": 37, "Sherwood": 31, "Bryant": 25,
+    "Paragould": 28, "Cabot": 26, "Searcy": 23,
+    # Connecticut extras
+    "Meriden": 60, "Middletown": 47, "New London": 27,
+    "Torrington": 35, "Shelton": 42, "Milford": 55,
+    "Bristol": 60, "Naugatuck": 31, "Stratford": 52, "East Hartford": 51,
+    # Georgia extras
+    "Gainesville": 42, "Peachtree City": 35, "Dalton": 34,
+    "Douglasville": 35, "Lawrenceville": 31, "Kennesaw": 34,
+    "Woodstock": 33, "Rome": 37, "Dunwoody": 49, "Brookhaven": 54,
     # Illinois extras
-    "Cicero": 84,
+    "Cicero": 84, "Orland Park": 57, "Arlington Heights": 76,
+    "Schaumburg": 73, "Normal": 54, "Palatine": 69,
+    "Oak Park": 52, "Berwyn": 54, "Downers Grove": 47,
+    "Tinley Park": 55, "Skokie": 65,
+    # Iowa extras
+    "Cedar Falls": 40, "Mason City": 27, "Ottumwa": 24,
+    "Burlington": 25, "Bettendorf": 39, "Clinton": 26,
+    "Marshalltown": 27, "Fort Dodge": 25, "Ankeny": 67,
+    # Kansas extras
+    "Hutchinson": 41, "Garden City": 26, "Junction City": 23,
+    "Emporia": 24, "Derby": 23, "Liberal": 21,
+    "Dodge City": 28, "Leawood": 34, "Prairie Village": 22, "Merriam": 11,
+    # Kentucky extras
+    "Paducah": 27, "Elizabethtown": 31, "Frankfort": 27,
+    "Murray": 18, "Ashland": 20, "Nicholasville": 32,
+    "Madisonville": 19, "Danville": 17, "Erlanger": 19, "Independence": 27,
+    # Louisiana extras
+    "Slidell": 29, "Metairie": 138, "New Iberia": 30,
+    "Thibodaux": 15, "Ruston": 22, "Opelousas": 16,
+    "Hammond": 21, "Natchitoches": 18, "Mandeville": 13, "Covington": 12,
+    # Maine extras
+    "Brunswick": 22, "Rockland": 8, "Presque Isle": 9,
+    "Bath": 8, "Waterville": 16,
+    # Maryland extras
+    "Silver Spring": 80, "Bethesda": 65, "Greenbelt": 24,
+    "Towson": 58, "Columbia": 103, "Germantown": 90,
+    "Waldorf": 79, "Ellicott City": 75, "Dundalk": 63, "Catonsville": 42,
+    # Mississippi extras
+    "Vicksburg": 23, "Starkville": 24, "Natchez": 15,
+    "Corinth": 14, "Greenville": 31, "Clinton": 26,
+    "Ridgeland": 24, "Brandon": 23, "Flowood": 9,
+    # Missouri extras
+    "Joplin": 52, "Sedalia": 22, "Cape Girardeau": 40,
+    "Jefferson City": 43, "Florissant": 52, "Chesterfield": 47,
+    "Wentzville": 39, "Ballwin": 30, "Kirkwood": 27, "Wildwood": 35,
+    # Nebraska extras
+    "Scottsbluff": 15, "Beatrice": 12, "Lexington": 10,
+    "Papillion": 24, "La Vista": 17,
+    # Nevada extras
+    "Pahrump": 36, "Sun Valley": 20, "Enterprise": 108,
+    "Winchester": 36, "Paradise": 193, "Spring Valley": 178,
+    "Summerlin South": 26, "Whitney": 38, "Sunrise Manor": 189,
+    "East Las Vegas": 41,
+    # New Mexico extras
+    "Gallup": 22, "Artesia": 12, "Deming": 14,
+    "Silver City": 9, "Portales": 12, "Lovington": 12,
+    "Ruidoso": 8, "Taos": 6, "Los Lunas": 17, "Española": 10,
+    # Oklahoma extras
+    "Muskogee": 37, "Shawnee": 30, "Ponca City": 25,
+    "Bartlesville": 36, "Yukon": 25, "Bixby": 27,
+    "Owasso": 36, "Sapulpa": 21, "Ardmore": 24, "Duncan": 23,
+    # Oregon extras
+    "Albany": 54, "Lake Oswego": 41, "Grants Pass": 39,
+    "Klamath Falls": 21, "Tigard": 54, "Tualatin": 29,
+    "West Linn": 27, "Ashland": 21, "Roseburg": 23,
+    # Iowa extras 2
+    "Iowa Falls": 5,
+    # South Carolina extras
+    "Myrtle Beach": 35, "Spartanburg": 38, "Anderson": 28,
+    "Conway": 24, "Aiken": 31, "Greer": 29,
+    "Greenwood": 23, "Bluffton": 26, "Beaufort": 13,
+    # Utah extras
+    "Lehi": 80, "Draper": 48, "Herriman": 44,
+    "Taylorsville": 59, "Murray": 48, "South Jordan": 75,
+    "Logan": 52, "Cedar City": 35, "Springville": 38, "Spanish Fork": 41,
+    # West Virginia extras
+    "Bluefield": 10, "St. Albans": 11, "Vienna": 11,
+    "South Charleston": 13,
     # Ohio extras
     "Lorain": 63, "Youngstown": 60,
     # Oregon extras
@@ -518,6 +613,7 @@ CITY_POPULATIONS = {
 
 # Approximate state populations (thousands) — 2023 estimates
 STATE_POPULATIONS = {
+    "DC": 689,
     "AL": 5100, "AK": 740, "AZ": 7400, "AR": 3050, "CA": 39500,
     "CO": 5800, "CT": 3610, "DE": 1000, "FL": 22600, "GA": 10900,
     "HI": 1440, "ID": 1900, "IL": 12800, "IN": 6800, "IA": 3200,
@@ -532,6 +628,7 @@ STATE_POPULATIONS = {
 
 # Simple climate zone tag per state (for city context)
 STATE_CLIMATE = {
+    "DC": "mixed-humid",
     "AK": "subarctic", "HI": "tropical",
     "FL": "hot-humid", "LA": "hot-humid", "MS": "hot-humid",
     "AL": "hot-humid", "GA": "hot-humid", "SC": "mixed-humid",
@@ -555,6 +652,7 @@ STATE_CLIMATE = {
 
 # Average retail electricity price cents/kWh by state (approximate)
 STATE_RETAIL_PRICE = {
+    "DC": 13.8,
     "AL": 12.2, "AK": 22.1, "AZ": 12.1, "AR": 10.4, "CA": 22.0,
     "CO": 12.5, "CT": 22.0, "DE": 12.3, "FL": 11.9, "GA": 11.5,
     "HI": 32.0, "ID": 9.0, "IL": 12.5, "IN": 11.2, "IA": 11.0,

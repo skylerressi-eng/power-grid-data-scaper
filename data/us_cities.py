@@ -17,12 +17,15 @@ STATE_ABBREVS = {
     "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT",
     "Vermont": "VT", "Virginia": "VA", "Washington": "WA", "West Virginia": "WV",
     "Wisconsin": "WI", "Wyoming": "WY",
+    "District of Columbia": "DC",
 }
 
 US_CITIES = {
     "Alabama": [
         "Birmingham", "Montgomery", "Huntsville", "Mobile", "Tuscaloosa",
         "Hoover", "Dothan", "Auburn", "Decatur", "Madison",
+        "Gadsden", "Florence", "Phenix City", "Opelika", "Bessemer",
+        "Homewood", "Vestavia Hills", "Trussville", "Northport", "Prattville",
     ],
     "Alaska": [
         "Anchorage", "Fairbanks", "Juneau", "Sitka", "Ketchikan",
@@ -32,10 +35,14 @@ US_CITIES = {
         "Phoenix", "Tucson", "Mesa", "Chandler", "Scottsdale",
         "Glendale", "Gilbert", "Tempe", "Peoria", "Surprise",
         "Yuma", "Avondale", "Flagstaff", "Goodyear", "Lake Havasu City",
+        "Casa Grande", "Sierra Vista", "Prescott", "Apache Junction", "Maricopa",
+        "Queen Creek", "Buckeye", "El Mirage", "Prescott Valley", "Oro Valley",
     ],
     "Arkansas": [
         "Little Rock", "Fort Smith", "Fayetteville", "Springdale", "Jonesboro",
         "North Little Rock", "Conway", "Rogers", "Pine Bluff", "Bentonville",
+        "Texarkana", "Russellville", "Benton", "Hot Springs", "Sherwood",
+        "Jacksonville", "Bryant", "Paragould", "Cabot", "Searcy",
     ],
     "California": [
         "Los Angeles", "San Diego", "San Jose", "San Francisco", "Fresno",
@@ -74,6 +81,8 @@ US_CITIES = {
     "Connecticut": [
         "Bridgeport", "New Haven", "Stamford", "Hartford", "Waterbury",
         "Norwalk", "Danbury", "New Britain", "West Hartford", "Greenwich",
+        "Meriden", "Middletown", "New London", "Torrington", "Shelton",
+        "Milford", "Bristol", "Naugatuck", "Stratford", "East Hartford",
     ],
     "Delaware": [
         "Wilmington", "Dover", "Newark", "Middletown", "Smyrna",
@@ -94,6 +103,8 @@ US_CITIES = {
         "Atlanta", "Columbus", "Augusta", "Macon", "Savannah",
         "Athens", "Sandy Springs", "Roswell", "Albany", "Johns Creek",
         "Warner Robins", "Alpharetta", "Marietta", "Valdosta", "Smyrna",
+        "Gainesville", "Peachtree City", "Dalton", "Douglasville", "Lawrenceville",
+        "Kennesaw", "Woodstock", "Rome", "Dunwoody", "Brookhaven",
     ],
     "Hawaii": [
         "Honolulu", "Hilo", "Kailua", "Pearl City", "Waipahu",
@@ -107,6 +118,8 @@ US_CITIES = {
         "Chicago", "Aurora", "Joliet", "Rockford", "Springfield",
         "Elgin", "Peoria", "Champaign", "Waukegan", "Cicero",
         "Bloomington", "Naperville", "Evanston", "Decatur", "Bolingbrook",
+        "Orland Park", "Arlington Heights", "Schaumburg", "Normal", "Palatine",
+        "Oak Park", "Berwyn", "Downers Grove", "Tinley Park", "Skokie",
     ],
     "Indiana": [
         "Indianapolis", "Fort Wayne", "Evansville", "South Bend", "Carmel",
@@ -116,26 +129,37 @@ US_CITIES = {
     "Iowa": [
         "Des Moines", "Cedar Rapids", "Davenport", "Sioux City", "Iowa City",
         "Waterloo", "Council Bluffs", "Ames", "West Des Moines", "Dubuque",
+        "Cedar Falls", "Mason City", "Ottumwa", "Burlington", "Bettendorf",
+        "Clinton", "Marshalltown", "Fort Dodge", "Iowa Falls", "Ankeny",
     ],
     "Kansas": [
         "Wichita", "Overland Park", "Kansas City", "Olathe", "Topeka",
         "Lawrence", "Shawnee", "Manhattan", "Lenexa", "Salina",
+        "Hutchinson", "Garden City", "Junction City", "Emporia", "Derby",
+        "Liberal", "Dodge City", "Leawood", "Prairie Village", "Merriam",
     ],
     "Kentucky": [
         "Louisville", "Lexington", "Bowling Green", "Owensboro", "Covington",
         "Hopkinsville", "Richmond", "Florence", "Georgetown", "Henderson",
+        "Paducah", "Elizabethtown", "Frankfort", "Murray", "Ashland",
+        "Nicholasville", "Madisonville", "Danville", "Erlanger", "Independence",
     ],
     "Louisiana": [
         "New Orleans", "Baton Rouge", "Shreveport", "Lafayette", "Lake Charles",
         "Kenner", "Bossier City", "Monroe", "Alexandria", "Houma",
+        "Slidell", "Metairie", "New Iberia", "Thibodaux", "Ruston",
+        "Opelousas", "Hammond", "Natchitoches", "Mandeville", "Covington",
     ],
     "Maine": [
         "Portland", "Lewiston", "Bangor", "South Portland", "Auburn",
         "Biddeford", "Sanford", "Augusta", "Saco", "Westbrook",
+        "Brunswick", "Rockland", "Presque Isle", "Bath", "Waterville",
     ],
     "Maryland": [
         "Baltimore", "Frederick", "Rockville", "Gaithersburg", "Bowie",
         "Hagerstown", "Annapolis", "College Park", "Salisbury", "Laurel",
+        "Silver Spring", "Bethesda", "Greenbelt", "Towson", "Columbia",
+        "Germantown", "Waldorf", "Ellicott City", "Dundalk", "Catonsville",
     ],
     "Massachusetts": [
         "Boston", "Worcester", "Springfield", "Lowell", "Cambridge",
@@ -155,10 +179,14 @@ US_CITIES = {
     "Mississippi": [
         "Jackson", "Gulfport", "Southaven", "Hattiesburg", "Biloxi",
         "Meridian", "Tupelo", "Olive Branch", "Horn Lake", "Pearl",
+        "Vicksburg", "Starkville", "Natchez", "Corinth", "Greenville",
+        "Clinton", "Ridgeland", "Brandon", "Madison", "Flowood",
     ],
     "Missouri": [
         "Kansas City", "Saint Louis", "Springfield", "Columbia", "Independence",
         "Lee's Summit", "O'Fallon", "Saint Joseph", "Saint Charles", "Blue Springs",
+        "Joplin", "Sedalia", "Cape Girardeau", "Jefferson City", "Florissant",
+        "Chesterfield", "Wentzville", "Ballwin", "Kirkwood", "Wildwood",
     ],
     "Montana": [
         "Billings", "Missoula", "Great Falls", "Bozeman", "Butte",
@@ -167,10 +195,13 @@ US_CITIES = {
     "Nebraska": [
         "Omaha", "Lincoln", "Bellevue", "Grand Island", "Kearney",
         "Fremont", "Hastings", "North Platte", "Norfolk", "Columbus",
+        "Scottsbluff", "Beatrice", "Lexington", "Papillion", "La Vista",
     ],
     "Nevada": [
         "Las Vegas", "Henderson", "Reno", "North Las Vegas", "Sparks",
         "Carson City", "Fernley", "Elko", "Mesquite", "Boulder City",
+        "Pahrump", "Sun Valley", "Enterprise", "Winchester", "Paradise",
+        "Spring Valley", "Summerlin South", "Whitney", "Sunrise Manor", "East Las Vegas",
     ],
     "New Hampshire": [
         "Manchester", "Nashua", "Concord", "Derry", "Dover",
@@ -184,6 +215,8 @@ US_CITIES = {
     "New Mexico": [
         "Albuquerque", "Las Cruces", "Rio Rancho", "Santa Fe", "Roswell",
         "Farmington", "Clovis", "Hobbs", "Alamogordo", "Carlsbad",
+        "Gallup", "Artesia", "Deming", "Silver City", "Portales",
+        "Lovington", "Ruidoso", "Taos", "Los Lunas", "Española",
     ],
     "New York": [
         "New York City", "Buffalo", "Rochester", "Yonkers", "Syracuse",
@@ -210,10 +243,14 @@ US_CITIES = {
     "Oklahoma": [
         "Oklahoma City", "Tulsa", "Norman", "Broken Arrow", "Lawton",
         "Edmond", "Moore", "Midwest City", "Enid", "Stillwater",
+        "Muskogee", "Shawnee", "Ponca City", "Bartlesville", "Yukon",
+        "Bixby", "Owasso", "Sapulpa", "Ardmore", "Duncan",
     ],
     "Oregon": [
         "Portland", "Salem", "Eugene", "Gresham", "Hillsboro",
         "Beaverton", "Bend", "Medford", "Springfield", "Corvallis",
+        "Albany", "Lake Oswego", "Grants Pass", "Klamath Falls", "Tigard",
+        "Tualatin", "West Linn", "Redmond", "Roseburg", "Ashland",
     ],
     "Pennsylvania": [
         "Philadelphia", "Pittsburgh", "Allentown", "Erie", "Reading",
@@ -227,6 +264,8 @@ US_CITIES = {
     "South Carolina": [
         "Columbia", "Charleston", "North Charleston", "Mount Pleasant", "Rock Hill",
         "Greenville", "Summerville", "Sumter", "Goose Creek", "Hilton Head Island",
+        "Myrtle Beach", "Spartanburg", "Anderson", "Florence", "Conway",
+        "Aiken", "Greer", "Greenwood", "Bluffton", "Beaufort",
     ],
     "South Dakota": [
         "Sioux Falls", "Rapid City", "Aberdeen", "Brookings", "Watertown",
@@ -252,6 +291,8 @@ US_CITIES = {
     "Utah": [
         "Salt Lake City", "West Valley City", "Provo", "West Jordan", "Orem",
         "Sandy", "Ogden", "St. George", "Layton", "Millcreek",
+        "Lehi", "Draper", "Herriman", "Taylorsville", "Murray",
+        "South Jordan", "Logan", "Cedar City", "Springville", "Spanish Fork",
     ],
     "Vermont": [
         "Burlington", "South Burlington", "Rutland", "Essex Junction", "Barre",
@@ -270,6 +311,7 @@ US_CITIES = {
     "West Virginia": [
         "Charleston", "Huntington", "Parkersburg", "Morgantown", "Wheeling",
         "Weirton", "Fairmont", "Martinsburg", "Beckley", "Clarksburg",
+        "Bluefield", "St. Albans", "Vienna", "Bridgeport", "South Charleston",
     ],
     "Wisconsin": [
         "Milwaukee", "Madison", "Green Bay", "Kenosha", "Racine",
@@ -279,6 +321,12 @@ US_CITIES = {
     "Wyoming": [
         "Cheyenne", "Casper", "Laramie", "Gillette", "Rock Springs",
         "Sheridan", "Green River", "Evanston", "Riverton", "Jackson",
+        "Lander", "Cody", "Worland", "Rawlins", "Douglas",
+    ],
+    "District of Columbia": [
+        "Washington",
+        "Georgetown", "Capitol Hill", "Adams Morgan", "Dupont Circle",
+        "Foggy Bottom", "Navy Yard", "Columbia Heights", "Anacostia", "Petworth",
     ],
 }
 
