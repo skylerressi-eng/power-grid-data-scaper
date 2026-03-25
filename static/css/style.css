@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
 /* ── Reset & Base ─────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,6 +29,11 @@
 }
 
 html { scroll-behavior: smooth; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
 body {
   font-family: var(--font);
@@ -130,6 +137,21 @@ section { margin-bottom: 24px; }
   gap: 20px;
 }
 
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: 1fr 1fr; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .three-col { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr; }
+  main { padding: 16px 12px; }
+  header { padding: 16px 20px; }
+  .controls-card { padding: 20px 16px; }
+  .logo h1 { font-size: 1.3rem; }
+  .logo-icon { font-size: 1.8rem; }
+}
+
 /* ── Card ─────────────────────────────────────────────────────────────────── */
 .card {
   background: var(--surface);
@@ -199,6 +221,16 @@ select:focus {
 }
 
 select:disabled { opacity: 0.4; cursor: not-allowed; }
+
+select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
 
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), #388bfd);
@@ -319,6 +351,16 @@ select:disabled { opacity: 0.4; cursor: not-allowed; }
 .accent-orange { border-left: 3px solid var(--orange); }
 .accent-green  { border-left: 3px solid var(--green); }
 .accent-teal   { border-left: 3px solid var(--teal); }
+
+/* ── Results entrance animation ──────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-animate {
+  animation: fade-up .4s cubic-bezier(.2,.6,.4,1) both;
+}
 
 /* ── Charts ───────────────────────────────────────────────────────────────── */
 .chart-wrap {
@@ -472,6 +514,22 @@ tbody td {
   margin-top: 16px;
 }
 
+/* ── Results header ───────────────────────────────────────────────────────── */
+.results-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 8px;
+  min-height: 24px;
+}
+
+.results-timestamp {
+  font-size: .72rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  letter-spacing: .02em;
+}
+
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 footer {
   border-top: 1px solid var(--border);
@@ -489,16 +547,11 @@ footer a:hover { color: var(--blue); }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .two-col, .three-col { grid-template-columns: 1fr; }
   .controls-row { flex-direction: column; }
   .btn-primary { width: 100%; justify-content: center; }
-  .stat-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 560px) {
-  header { padding: 16px; }
-  main { padding: 16px; }
-  .logo h1 { font-size: 1.3rem; }
   .data-badge { display: none; }
 }
 

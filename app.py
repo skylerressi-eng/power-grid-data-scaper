@@ -145,8 +145,9 @@ def api_simulate():
     city = body.get("city", "").strip()
     request_eia_key = (body.get("eia_api_key") or "").strip()
     effective_eia_key = request_eia_key or EIA_API_KEY
-    savings_goal = float(body.get("savings_goal", 100.0))
-    max_sims = min(int(body.get("max_sims", 100)), 500)
+    savings_goal = max(1.0, float(body.get("savings_goal", 100.0) or 100.0))
+    requested_sims = int(body.get("max_sims", 100) or 100)
+    max_sims = min(requested_sims, 500)
 
     if not state or not city:
         return jsonify({"error": "Both 'state' and 'city' are required"}), 400

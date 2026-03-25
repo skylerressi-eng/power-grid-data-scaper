@@ -4,10 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Power Grid Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <meta name="theme-color" content="#0d1117" />
   <link rel="stylesheet" href="/static/css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+<noscript><div style="background:#f85149;color:#fff;padding:12px 24px;text-align:center;font-family:sans-serif">JavaScript is required to run this application.</div></noscript>
 
 <!-- ── Header ─────────────────────────────────────────────────────────────── -->
 <header>
@@ -71,8 +75,17 @@
     </div>
   </section>
 
+  <!-- Error banner -->
+  <div id="error-banner" class="hidden error-banner">
+    <strong>Error:</strong> <span id="error-text"></span>
+  </div>
+
   <!-- Results (hidden until analyzed) -->
   <div id="results" class="hidden">
+
+    <div class="results-header">
+      <span id="analyzed-timestamp" class="results-timestamp"></span>
+    </div>
 
     <!-- Provider & Grid Overview -->
     <section class="two-col">
@@ -460,11 +473,6 @@
     </section>
 
   </div><!-- /#results -->
-
-  <!-- Error banner -->
-  <div id="error-banner" class="hidden error-banner">
-    <strong>Error:</strong> <span id="error-text"></span>
-  </div>
 
 </main>
 

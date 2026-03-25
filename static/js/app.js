@@ -511,7 +511,17 @@ analyzeBtn.addEventListener('click', async function analyzeHandler() {
       throw new Error(msg);
     }
     renderResults(data);
+    const now = new Date();
+    const stamp = document.getElementById('analyzed-timestamp');
+    if (stamp) stamp.textContent = `Analyzed ${now.toLocaleTimeString()} · ${data.city}, ${data.state}`;
     resultsDiv.classList.remove('hidden');
+    // Stagger section entrance animations
+    resultsDiv.querySelectorAll('section').forEach((s, i) => {
+      s.style.animationDelay = (i * 55) + 'ms';
+      s.classList.remove('section-animate');
+      void s.offsetWidth; // force reflow to restart animation
+      s.classList.add('section-animate');
+    });
     resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (e) {
     showError(e.message);
@@ -702,7 +712,7 @@ async function runSimulations() {
   const statusText  = document.getElementById('sim-status-text');
   const resultsDiv  = document.getElementById('sim-results');
 
-  const savingsGoal = parseFloat(goalInput.value) || 100;
+  const savingsGoal = Math.max(1, parseFloat(goalInput.value) || 100);
   const maxSims     = parseInt(maxInput.value)    || 100;
 
   btn.disabled = true;
@@ -710,6 +720,7 @@ async function runSimulations() {
   spinner.classList.remove('hidden');
   progWrap.classList.remove('hidden');
   resultsDiv.classList.add('hidden');
+  document.getElementById('sim-best-scenario').classList.add('hidden');
   simSetProgress(0);
   statusText.textContent = 'Fetching grid data and running simulations…';
 
@@ -749,9 +760,75 @@ async function runSimulations() {
   const chartColors = [];
   const goalLine    = savingsGoal;
 
+  // Initialize the live chart immediately (before animation starts)
+  resultsDiv.classList.remove('hidden');
+  document.getElementById('sim-complete-banner').classList && resultsDiv.classList.remove('hidden');
+  if (simChart) simChart.destroy();
+  const liveCtx = document.getElementById('sim-chart').getContext('2d');
+  simChart = new Chart(liveCtx, {
+    type: 'bar',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Annual Savings ($)',
+          data: chartData,
+          backgroundColor: chartColors,
+          borderWidth: 0,
+          borderRadius: 2,
+        },
+        {
+          type: 'line',
+          label: `Goal: $${fmt(goalLine)}`,
+          data: [],
+          borderColor: '#f0883e',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 0,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { display: total <= 50, font: { size: 9 } },
+          title: { display: true, text: 'Simulation #', color: '#8b949e' },
+        },
+        y: {
+          grid: { color: '#21262d' },
+          ticks: { callback: v => '$' + fmt(v) },
+          title: { display: true, text: 'Annual Savings ($)', color: '#8b949e' },
+        },
+      },
+      plugins: {
+        legend: { labels: { font: { size: 11 }, color: '#8b949e', boxWidth: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.datasetIndex === 1
+              ? ` Goal: $${fmt(ctx.parsed.y)}`
+              : ` Sim #${ctx.label}: $${fmt(ctx.parsed.y)} savings`,
+          },
+        },
+      },
+    },
+  });
+  // Hide completion elements until done
+  document.getElementById('sim-complete-banner').classList.add('hidden');
+  document.querySelectorAll('#sim-results .algo-kpi-grid, #sim-best-scenario, #sim-results .algo-actions-title + div').forEach(el => el.classList.add('hidden'));
+
+  // Batch update interval: update chart every N sims to avoid too many redraws
+  const updateEvery = Math.max(1, Math.floor(total / 60));
+
   function animateNext() {
     if (animIdx >= total) {
-      // Done — show results
+      // Update chart one final time with all data
+      simChart.data.datasets[1].data = Array(chartLabels.length).fill(goalLine);
+      simChart.update('none');
       simSetProgress(100);
       statusText.textContent = `Complete — ${total} simulations run.`;
       spinner.classList.add('hidden');
@@ -773,9 +850,15 @@ async function runSimulations() {
     chartData.push(sim.annual_savings_usd);
     chartColors.push(sim.reached_goal ? '#3fb950' : '#58a6ff');
 
+    // Update chart every N sims for smooth live rendering
+    if (animIdx % updateEvery === 0 || animIdx === total - 1) {
+      simChart.data.datasets[0].backgroundColor = chartColors.slice();
+      simChart.data.datasets[1].data = Array(chartLabels.length).fill(goalLine);
+      simChart.update('none');
+    }
+
     animIdx++;
-    // Speed: ~20ms/sim for smooth animation without being too slow
-    setTimeout(animateNext, Math.max(6, Math.round(1800 / total)));
+    setTimeout(animateNext, Math.max(8, Math.round(2400 / total)));
   }
 
   animateNext();
@@ -789,6 +872,10 @@ function simSetProgress(pct) {
 
 function showSimResults(data, goal, labels, values, colors, goalLine) {
   const resultsDiv = document.getElementById('sim-results');
+
+  // Restore elements that may have been hidden during live animation
+  document.querySelectorAll('#sim-results .algo-kpi-grid').forEach(el => el.classList.remove('hidden'));
+  document.getElementById('sim-complete-banner').classList.remove('hidden');
 
   // Banner
   const goalReached = data.goal_reached;
