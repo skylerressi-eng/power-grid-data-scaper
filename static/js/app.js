@@ -22,6 +22,7 @@ let historyMixChart = null;
 
 // ── DOM refs ──────────────────────────────────────────────────────────────
 const stateSelect   = document.getElementById('state-select');
+const regionSelect  = document.getElementById('region-select');
 const citySelect    = document.getElementById('city-select');
 const analyzeBtn    = document.getElementById('analyze-btn');
 const btnLabel      = document.getElementById('btn-label');
@@ -46,21 +47,91 @@ const errorText     = document.getElementById('error-text');
   }
 })();
 
-// ── State change → load cities ────────────────────────────────────────────
+// ── State change → load regions ───────────────────────────────────────────
 stateSelect.addEventListener('change', async () => {
   const state = stateSelect.value;
-  citySelect.innerHTML = '<option value="" disabled selected>Loading cities…</option>';
+  regionSelect.innerHTML = '<option value="" disabled selected>Loading areas…</option>';
+  regionSelect.disabled = true;
+  citySelect.innerHTML = '<option value="">— Select City —</option>';
   citySelect.disabled = true;
   analyzeBtn.disabled = true;
   hideError();
 
   if (!state) {
-    citySelect.innerHTML = '<option value="">— Select City —</option>';
+    regionSelect.innerHTML = '<option value="">— Select Area —</option>';
     return;
   }
 
   try {
-    const res = await fetch(`/api/cities?state=${encodeURIComponent(state)}`);
+    const res = await fetch(`/api/regions?state=${encodeURIComponent(state)}`);
+    const regions = await res.json();
+    regionSelect.innerHTML = '';
+
+    if (!Array.isArray(regions) || regions.length === 0) {
+      // No region data — fall back to loading all cities directly
+      regionSelect.innerHTML = '<option value="All Cities">All Cities</option>';
+      regionSelect.disabled = false;
+      await loadCities(state, 'All Cities');
+      return;
+    }
+
+    if (regions.length === 1) {
+      // Single-region state: auto-select the region and load cities immediately
+      const opt = document.createElement('option');
+      opt.value = regions[0];
+      opt.textContent = regions[0];
+      regionSelect.appendChild(opt);
+      regionSelect.disabled = false;
+      await loadCities(state, regions[0]);
+    } else {
+      // Multi-region state: add "All Cities" first, then each region
+      const allOpt = document.createElement('option');
+      allOpt.value = '';
+      allOpt.textContent = '— Select Area —';
+      allOpt.disabled = true;
+      allOpt.selected = true;
+      regionSelect.appendChild(allOpt);
+
+      const allCitiesOpt = document.createElement('option');
+      allCitiesOpt.value = 'All Cities';
+      allCitiesOpt.textContent = 'All Cities';
+      regionSelect.appendChild(allCitiesOpt);
+
+      regions.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        regionSelect.appendChild(opt);
+      });
+      regionSelect.disabled = false;
+    }
+  } catch (e) {
+    regionSelect.innerHTML = '<option value="All Cities">All Cities</option>';
+    regionSelect.disabled = false;
+    showError('Failed to load regions: ' + e.message);
+    await loadCities(state, 'All Cities');
+  }
+});
+
+// ── Region change → load cities ───────────────────────────────────────────
+regionSelect.addEventListener('change', async () => {
+  const state = stateSelect.value;
+  const region = regionSelect.value;
+  if (!state || !region) return;
+  citySelect.innerHTML = '<option value="">— Select City —</option>';
+  citySelect.disabled = true;
+  analyzeBtn.disabled = true;
+  await loadCities(state, region);
+});
+
+async function loadCities(state, region) {
+  citySelect.innerHTML = '<option value="" disabled selected>Loading cities…</option>';
+  citySelect.disabled = true;
+  analyzeBtn.disabled = true;
+  hideError();
+  try {
+    const url = `/api/cities?state=${encodeURIComponent(state)}&region=${encodeURIComponent(region)}`;
+    const res = await fetch(url);
     const cities = await res.json();
     if (!Array.isArray(cities)) throw new Error(cities.error || 'Unknown error');
     citySelect.innerHTML = '<option value="">— Select City —</option>';
@@ -79,7 +150,7 @@ stateSelect.addEventListener('change', async () => {
     citySelect.innerHTML = '<option value="">— Select City —</option>';
     showError('Failed to load cities: ' + e.message);
   }
-});
+}
 
 // ── City change → enable button ───────────────────────────────────────────
 citySelect.addEventListener('change', () => {
@@ -89,7 +160,8 @@ citySelect.addEventListener('change', () => {
 // ── Enter key triggers analysis ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !analyzeBtn.disabled &&
-      (document.activeElement === citySelect || document.activeElement === stateSelect)) {
+      (document.activeElement === citySelect || document.activeElement === stateSelect
+       || document.activeElement === regionSelect)) {
     analyzeBtn.click();
   }
 });

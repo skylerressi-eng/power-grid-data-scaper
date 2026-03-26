@@ -16,7 +16,7 @@ from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-from data.us_cities import get_states, get_cities, get_state_abbrev
+from data.us_cities import get_states, get_cities, get_state_abbrev, get_regions, get_cities_by_region
 from scraper import PowerGridScraper
 from optimizer import PowerGridOptimizer
 
@@ -67,12 +67,25 @@ def api_states():
     return jsonify(get_states())
 
 
-@app.route("/api/cities")
-def api_cities():
+@app.route("/api/regions")
+def api_regions():
     state = request.args.get("state", "").strip()
     if not state:
         return jsonify({"error": "state parameter required"}), 400
-    cities = get_cities(state)
+    regions = get_regions(state)
+    return jsonify(regions)
+
+
+@app.route("/api/cities")
+def api_cities():
+    state = request.args.get("state", "").strip()
+    region = request.args.get("region", "").strip()
+    if not state:
+        return jsonify({"error": "state parameter required"}), 400
+    if region and region != "All Cities":
+        cities = get_cities_by_region(state, region)
+    else:
+        cities = get_cities(state)
     if not cities:
         return jsonify({"error": f"No cities found for state: {state}"}), 404
     return jsonify(cities)

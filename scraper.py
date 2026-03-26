@@ -186,6 +186,170 @@ CITY_GENERATION_PROFILES = {
     "El Cajon":       {"natural-gas": 36, "hydro": 7, "solar": 28, "wind": 9, "nuclear": 5, "other": 15},
     "Vista":          {"natural-gas": 34, "hydro": 7, "solar": 30, "wind": 10, "nuclear": 5, "other": 14},
     "San Marcos":     {"natural-gas": 34, "hydro": 7, "solar": 30, "wind": 10, "nuclear": 5, "other": 14},
+    # ── Texas ────────────────────────────────────────────────────────────────
+    # Houston area: CenterPoint Energy, heavy natural-gas, growing wind
+    "Houston":        {"natural-gas": 52, "wind": 18, "coal": 12, "solar": 8, "nuclear": 6, "other": 4},
+    "Pasadena":       {"natural-gas": 54, "wind": 16, "coal": 12, "solar": 7, "nuclear": 6, "other": 5},
+    "Baytown":        {"natural-gas": 55, "wind": 15, "coal": 12, "solar": 7, "nuclear": 6, "other": 5},
+    "Sugar Land":     {"natural-gas": 50, "wind": 20, "coal": 11, "solar": 9, "nuclear": 6, "other": 4},
+    "Pearland":       {"natural-gas": 50, "wind": 20, "coal": 11, "solar": 9, "nuclear": 6, "other": 4},
+    "League City":    {"natural-gas": 50, "wind": 20, "coal": 11, "solar": 9, "nuclear": 6, "other": 4},
+    "Beaumont":       {"natural-gas": 55, "wind": 14, "coal": 13, "solar": 7, "nuclear": 6, "other": 5},
+    # Dallas-Fort Worth: Oncor, gas + coal + wind mix
+    "Dallas":         {"natural-gas": 44, "wind": 22, "coal": 18, "solar": 8, "nuclear": 6, "other": 2},
+    "Fort Worth":     {"natural-gas": 44, "wind": 22, "coal": 18, "solar": 8, "nuclear": 6, "other": 2},
+    "Arlington":      {"natural-gas": 44, "wind": 22, "coal": 18, "solar": 8, "nuclear": 6, "other": 2},
+    "Plano":          {"natural-gas": 43, "wind": 23, "coal": 17, "solar": 9, "nuclear": 6, "other": 2},
+    "Garland":        {"natural-gas": 44, "wind": 22, "coal": 18, "solar": 8, "nuclear": 6, "other": 2},
+    "Irving":         {"natural-gas": 44, "wind": 22, "coal": 18, "solar": 8, "nuclear": 6, "other": 2},
+    "McKinney":       {"natural-gas": 42, "wind": 24, "coal": 16, "solar": 10, "nuclear": 6, "other": 2},
+    "Frisco":         {"natural-gas": 42, "wind": 24, "coal": 16, "solar": 10, "nuclear": 6, "other": 2},
+    "Carrollton":     {"natural-gas": 43, "wind": 23, "coal": 17, "solar": 9, "nuclear": 6, "other": 2},
+    "Denton":         {"natural-gas": 42, "wind": 25, "coal": 15, "solar": 10, "nuclear": 6, "other": 2},
+    "Waco":           {"natural-gas": 44, "wind": 22, "coal": 18, "solar": 8, "nuclear": 6, "other": 2},
+    # Austin: Austin Energy — leading US city utility for renewables
+    "Austin":         {"natural-gas": 30, "wind": 32, "solar": 20, "coal": 8, "nuclear": 8, "other": 2},
+    "Round Rock":     {"natural-gas": 32, "wind": 30, "solar": 18, "coal": 10, "nuclear": 8, "other": 2},
+    "Cedar Park":     {"natural-gas": 32, "wind": 30, "solar": 18, "coal": 10, "nuclear": 8, "other": 2},
+    "Georgetown":     {"natural-gas": 28, "wind": 35, "solar": 22, "coal": 6, "nuclear": 7, "other": 2},
+    # San Antonio: CPS Energy — nuclear + gas mix
+    "San Antonio":    {"natural-gas": 42, "nuclear": 18, "wind": 18, "coal": 12, "solar": 8, "other": 2},
+    # El Paso: El Paso Electric, heavy gas + growing solar
+    "El Paso":        {"natural-gas": 50, "solar": 22, "wind": 10, "coal": 10, "nuclear": 6, "other": 2},
+    # West Texas: Lubbock/Amarillo — wind-heavy region
+    "Lubbock":        {"natural-gas": 38, "wind": 38, "coal": 14, "solar": 7, "nuclear": 0, "other": 3},
+    "Amarillo":       {"natural-gas": 35, "wind": 42, "coal": 14, "solar": 6, "nuclear": 0, "other": 3},
+    "Midland":        {"natural-gas": 48, "wind": 28, "coal": 12, "solar": 9, "nuclear": 0, "other": 3},
+    "Odessa":         {"natural-gas": 48, "wind": 28, "coal": 12, "solar": 9, "nuclear": 0, "other": 3},
+    # ── New York ─────────────────────────────────────────────────────────────
+    # NYC: Con Edison — gas + nuclear + hydro mix; subway + dense grid
+    "New York City":  {"natural-gas": 42, "nuclear": 26, "hydro": 18, "wind": 6, "solar": 4, "other": 4},
+    "Brooklyn":       {"natural-gas": 44, "nuclear": 24, "hydro": 18, "wind": 6, "solar": 4, "other": 4},
+    "Queens":         {"natural-gas": 44, "nuclear": 24, "hydro": 18, "wind": 6, "solar": 4, "other": 4},
+    "Bronx":          {"natural-gas": 45, "nuclear": 23, "hydro": 17, "wind": 6, "solar": 4, "other": 5},
+    "Manhattan":      {"natural-gas": 42, "nuclear": 26, "hydro": 18, "wind": 6, "solar": 4, "other": 4},
+    "Yonkers":        {"natural-gas": 42, "nuclear": 26, "hydro": 18, "wind": 6, "solar": 4, "other": 4},
+    # Buffalo: National Grid, close to Niagara Falls hydro
+    "Buffalo":        {"natural-gas": 30, "nuclear": 28, "hydro": 28, "wind": 8, "solar": 3, "other": 3},
+    "Rochester":      {"natural-gas": 34, "nuclear": 26, "hydro": 24, "wind": 8, "solar": 4, "other": 4},
+    # Upstate: more hydro (Niagara), less gas
+    "Albany":         {"natural-gas": 36, "nuclear": 26, "hydro": 22, "wind": 8, "solar": 4, "other": 4},
+    "Syracuse":       {"natural-gas": 38, "nuclear": 26, "hydro": 22, "wind": 8, "solar": 3, "other": 3},
+    # ── Florida ──────────────────────────────────────────────────────────────
+    # FPL territory: heavy gas + growing solar
+    "Miami":          {"natural-gas": 65, "nuclear": 12, "solar": 13, "wind": 0, "coal": 6, "other": 4},
+    "Fort Lauderdale":{"natural-gas": 65, "nuclear": 12, "solar": 13, "wind": 0, "coal": 6, "other": 4},
+    "Hollywood":      {"natural-gas": 65, "nuclear": 12, "solar": 13, "wind": 0, "coal": 6, "other": 4},
+    "Boca Raton":     {"natural-gas": 65, "nuclear": 12, "solar": 14, "wind": 0, "coal": 5, "other": 4},
+    "West Palm Beach":{"natural-gas": 64, "nuclear": 12, "solar": 14, "wind": 0, "coal": 6, "other": 4},
+    # Duke Energy Florida: more natural gas
+    "Tampa":          {"natural-gas": 68, "nuclear": 12, "solar": 9, "wind": 0, "coal": 8, "other": 3},
+    "St. Petersburg": {"natural-gas": 68, "nuclear": 12, "solar": 9, "wind": 0, "coal": 8, "other": 3},
+    "Clearwater":     {"natural-gas": 68, "nuclear": 12, "solar": 9, "wind": 0, "coal": 8, "other": 3},
+    "Lakeland":       {"natural-gas": 67, "nuclear": 12, "solar": 10, "wind": 0, "coal": 8, "other": 3},
+    "Orlando":        {"natural-gas": 67, "nuclear": 12, "solar": 10, "wind": 0, "coal": 8, "other": 3},
+    # JEA (Jacksonville) — municipal utility
+    "Jacksonville":   {"natural-gas": 60, "nuclear": 14, "solar": 10, "wind": 0, "coal": 12, "other": 4},
+    # ── Illinois ─────────────────────────────────────────────────────────────
+    # Chicago: ComEd — nuclear-heavy (Exelon fleet), low gas, low coal
+    "Chicago":        {"nuclear": 58, "natural-gas": 18, "wind": 12, "solar": 2, "coal": 7, "other": 3},
+    "Aurora":         {"nuclear": 56, "natural-gas": 20, "wind": 12, "solar": 2, "coal": 7, "other": 3},
+    "Naperville":     {"nuclear": 56, "natural-gas": 20, "wind": 12, "solar": 2, "coal": 7, "other": 3},
+    "Joliet":         {"nuclear": 55, "natural-gas": 20, "wind": 12, "solar": 2, "coal": 8, "other": 3},
+    "Rockford":       {"nuclear": 54, "natural-gas": 21, "wind": 12, "solar": 2, "coal": 8, "other": 3},
+    "Peoria":         {"nuclear": 52, "natural-gas": 22, "wind": 12, "solar": 2, "coal": 9, "other": 3},
+    "Springfield":    {"nuclear": 50, "natural-gas": 22, "wind": 13, "solar": 2, "coal": 10, "other": 3},
+    # ── Washington State ─────────────────────────────────────────────────────
+    # Puget Sound: PSE / Seattle City Light — dominant hydro + some wind
+    "Seattle":        {"hydro": 68, "wind": 14, "nuclear": 8, "natural-gas": 8, "solar": 1, "other": 1},
+    "Tacoma":         {"hydro": 70, "wind": 12, "nuclear": 8, "natural-gas": 8, "solar": 1, "other": 1},
+    "Bellevue":       {"hydro": 68, "wind": 14, "nuclear": 8, "natural-gas": 8, "solar": 1, "other": 1},
+    "Kent":           {"hydro": 66, "wind": 14, "nuclear": 8, "natural-gas": 10, "solar": 1, "other": 1},
+    "Everett":        {"hydro": 66, "wind": 14, "nuclear": 8, "natural-gas": 10, "solar": 1, "other": 1},
+    "Vancouver":      {"hydro": 66, "wind": 14, "nuclear": 8, "natural-gas": 10, "solar": 1, "other": 1},
+    # Eastern WA: Grant County PUD, etc. — almost pure hydro
+    "Spokane":        {"hydro": 72, "wind": 16, "nuclear": 6, "natural-gas": 5, "solar": 1, "other": 0},
+    "Kennewick":      {"hydro": 74, "wind": 15, "nuclear": 6, "natural-gas": 4, "solar": 1, "other": 0},
+    "Yakima":         {"hydro": 72, "wind": 16, "nuclear": 6, "natural-gas": 5, "solar": 1, "other": 0},
+    # ── Pennsylvania ─────────────────────────────────────────────────────────
+    # PECO (Philadelphia): nuclear-heavy + gas
+    "Philadelphia":   {"nuclear": 40, "natural-gas": 38, "wind": 7, "solar": 4, "coal": 7, "other": 4},
+    "Pittsburgh":     {"natural-gas": 42, "nuclear": 34, "wind": 8, "solar": 4, "coal": 9, "other": 3},
+    "Allentown":      {"nuclear": 38, "natural-gas": 40, "wind": 7, "solar": 4, "coal": 8, "other": 3},
+    # ── Georgia ──────────────────────────────────────────────────────────────
+    # Georgia Power (Southern Company): nuclear + gas + coal
+    "Atlanta":        {"natural-gas": 36, "nuclear": 30, "coal": 17, "solar": 9, "hydro": 5, "other": 3},
+    "Augusta":        {"natural-gas": 35, "nuclear": 32, "coal": 17, "solar": 8, "hydro": 5, "other": 3},
+    "Savannah":       {"natural-gas": 36, "nuclear": 30, "coal": 16, "solar": 10, "hydro": 5, "other": 3},
+    # ── Colorado ─────────────────────────────────────────────────────────────
+    # Xcel Energy Colorado: gas + coal + growing wind + solar
+    "Denver":         {"natural-gas": 34, "coal": 26, "wind": 24, "solar": 10, "hydro": 4, "other": 2},
+    "Colorado Springs":{"natural-gas": 35, "coal": 25, "wind": 22, "solar": 10, "hydro": 5, "other": 3},
+    "Aurora":         {"natural-gas": 34, "coal": 26, "wind": 24, "solar": 10, "hydro": 4, "other": 2},
+    "Boulder":        {"natural-gas": 32, "coal": 22, "wind": 28, "solar": 12, "hydro": 4, "other": 2},
+    "Fort Collins":   {"natural-gas": 32, "coal": 22, "wind": 28, "solar": 12, "hydro": 4, "other": 2},
+    # ── Michigan ─────────────────────────────────────────────────────────────
+    # DTE Energy / Consumers Energy: gas + nuclear + coal
+    "Detroit":        {"natural-gas": 40, "nuclear": 28, "coal": 20, "wind": 8, "solar": 2, "other": 2},
+    "Grand Rapids":   {"natural-gas": 38, "nuclear": 28, "coal": 20, "wind": 10, "solar": 2, "other": 2},
+    "Ann Arbor":      {"natural-gas": 38, "nuclear": 28, "coal": 20, "wind": 10, "solar": 2, "other": 2},
+    "Lansing":        {"natural-gas": 38, "nuclear": 28, "coal": 20, "wind": 10, "solar": 2, "other": 2},
+    # ── North Carolina ───────────────────────────────────────────────────────
+    # Duke Energy Carolinas: nuclear-leading + gas + growing solar
+    "Charlotte":      {"nuclear": 34, "natural-gas": 32, "solar": 12, "coal": 14, "hydro": 5, "other": 3},
+    "Raleigh":        {"nuclear": 33, "natural-gas": 33, "solar": 13, "coal": 14, "hydro": 5, "other": 2},
+    "Durham":         {"nuclear": 33, "natural-gas": 33, "solar": 13, "coal": 14, "hydro": 5, "other": 2},
+    "Greensboro":     {"nuclear": 32, "natural-gas": 33, "solar": 12, "coal": 16, "hydro": 5, "other": 2},
+    # ── Ohio ─────────────────────────────────────────────────────────────────
+    # AEP Ohio / FirstEnergy: gas + coal + some nuclear
+    "Columbus":       {"natural-gas": 44, "coal": 28, "nuclear": 15, "wind": 9, "solar": 2, "other": 2},
+    "Cleveland":      {"natural-gas": 42, "coal": 30, "nuclear": 16, "wind": 8, "solar": 2, "other": 2},
+    "Cincinnati":     {"natural-gas": 45, "coal": 27, "nuclear": 15, "wind": 9, "solar": 2, "other": 2},
+    "Toledo":         {"natural-gas": 43, "coal": 29, "nuclear": 15, "wind": 9, "solar": 2, "other": 2},
+    # ── Virginia ─────────────────────────────────────────────────────────────
+    # Dominion Energy Virginia: gas + nuclear + growing solar
+    "Virginia Beach": {"natural-gas": 42, "nuclear": 30, "solar": 10, "coal": 10, "wind": 5, "other": 3},
+    "Norfolk":        {"natural-gas": 42, "nuclear": 30, "solar": 10, "coal": 10, "wind": 5, "other": 3},
+    "Richmond":       {"natural-gas": 40, "nuclear": 32, "solar": 10, "coal": 11, "wind": 5, "other": 2},
+    "Alexandria":     {"natural-gas": 44, "nuclear": 28, "solar": 10, "coal": 10, "wind": 5, "other": 3},
+    # ── Arizona ──────────────────────────────────────────────────────────────
+    # APS: nuclear (Palo Verde) + gas + solar heavy
+    "Phoenix":        {"natural-gas": 36, "nuclear": 30, "solar": 18, "coal": 10, "wind": 3, "other": 3},
+    "Tucson":         {"natural-gas": 36, "nuclear": 28, "solar": 20, "coal": 10, "wind": 3, "other": 3},
+    "Mesa":           {"natural-gas": 36, "nuclear": 30, "solar": 18, "coal": 10, "wind": 3, "other": 3},
+    "Chandler":       {"natural-gas": 35, "nuclear": 30, "solar": 19, "coal": 10, "wind": 3, "other": 3},
+    "Scottsdale":     {"natural-gas": 35, "nuclear": 30, "solar": 20, "coal": 9, "wind": 3, "other": 3},
+    "Glendale":       {"natural-gas": 36, "nuclear": 30, "solar": 18, "coal": 10, "wind": 3, "other": 3},
+    # Tucson Electric Power (TEP) territory
+    "Flagstaff":      {"natural-gas": 34, "nuclear": 26, "solar": 18, "coal": 14, "wind": 5, "other": 3},
+    "Yuma":           {"natural-gas": 30, "nuclear": 28, "solar": 28, "coal": 8, "wind": 3, "other": 3},
+    # ── Nevada ───────────────────────────────────────────────────────────────
+    # NV Energy: gas-heavy + geothermal + growing solar
+    "Las Vegas":      {"natural-gas": 58, "solar": 22, "geothermal": 8, "wind": 5, "hydro": 4, "other": 3},
+    "Henderson":      {"natural-gas": 58, "solar": 22, "geothermal": 8, "wind": 5, "hydro": 4, "other": 3},
+    "Reno":           {"natural-gas": 56, "solar": 20, "geothermal": 10, "wind": 7, "hydro": 5, "other": 2},
+    "Sparks":         {"natural-gas": 56, "solar": 20, "geothermal": 10, "wind": 7, "hydro": 5, "other": 2},
+    # ── Massachusetts ────────────────────────────────────────────────────────
+    # Eversource + National Grid: heavy gas + some nuclear, offshore wind coming
+    "Boston":         {"natural-gas": 66, "nuclear": 10, "wind": 10, "solar": 8, "hydro": 4, "other": 2},
+    "Worcester":      {"natural-gas": 65, "nuclear": 10, "wind": 10, "solar": 8, "hydro": 5, "other": 2},
+    "Springfield":    {"natural-gas": 65, "nuclear": 10, "wind": 10, "solar": 8, "hydro": 5, "other": 2},
+    # ── Minnesota ────────────────────────────────────────────────────────────
+    # Xcel Energy MN: nuclear + wind + gas mix
+    "Minneapolis":    {"wind": 24, "nuclear": 22, "natural-gas": 22, "coal": 16, "hydro": 6, "solar": 5, "other": 5},
+    "St. Paul":       {"wind": 24, "nuclear": 22, "natural-gas": 22, "coal": 16, "hydro": 6, "solar": 5, "other": 5},
+    "Rochester":      {"wind": 26, "nuclear": 22, "natural-gas": 20, "coal": 16, "hydro": 6, "solar": 5, "other": 5},
+    # ── Oregon ───────────────────────────────────────────────────────────────
+    # Pacific Power / PGE: dominant hydro + wind
+    "Portland":       {"hydro": 62, "wind": 18, "natural-gas": 12, "solar": 5, "coal": 2, "other": 1},
+    "Salem":          {"hydro": 63, "wind": 17, "natural-gas": 12, "solar": 5, "coal": 2, "other": 1},
+    "Eugene":         {"hydro": 65, "wind": 16, "natural-gas": 12, "solar": 4, "coal": 2, "other": 1},
+    "Bend":           {"hydro": 62, "wind": 18, "natural-gas": 12, "solar": 5, "coal": 2, "other": 1},
+    # ── Wisconsin ────────────────────────────────────────────────────────────
+    # We Energies / Madison Gas & Electric: gas + coal + nuclear
+    "Milwaukee":      {"natural-gas": 36, "coal": 27, "nuclear": 18, "wind": 12, "solar": 4, "other": 3},
+    "Madison":        {"natural-gas": 34, "coal": 25, "nuclear": 18, "wind": 14, "solar": 5, "other": 4},
+    "Green Bay":      {"natural-gas": 36, "coal": 27, "nuclear": 18, "wind": 12, "solar": 4, "other": 3},
 }
 
 # Approximate state-level capacity (MW) and peak demand
@@ -839,6 +1003,51 @@ CITY_RETAIL_PRICES = {
     "San Marcos": 34.0,         # SDG&E
     "Murrieta": 34.0,           # SDG&E
     "Temecula": 34.0,           # SDG&E
+    # Texas — notable municipal utilities
+    "Austin": 11.8,             # Austin Energy — municipal, below TX average
+    "San Antonio": 11.5,        # CPS Energy — municipal, competitive rates
+    "Georgetown": 11.5,         # runs on 100% renewables via PPA
+    "El Paso": 10.8,            # El Paso Electric — border utility
+    # Washington State
+    "Seattle": 11.2,            # Seattle City Light — municipal, cheap hydro
+    "Tacoma": 9.8,              # Tacoma Power — municipal, hydro-heavy
+    "Bellevue": 11.4,           # Puget Sound Energy
+    # Florida
+    "Jacksonville": 11.4,       # JEA — municipal utility
+    "Orlando": 12.0,            # Duke Energy FL
+    "Tampa": 12.1,              # TECO
+    # New York
+    "New York City": 22.5,      # Con Edison — highest in US
+    "Brooklyn": 22.5,           # Con Edison
+    "Queens": 22.5,             # Con Edison
+    "Bronx": 22.5,              # Con Edison
+    "Manhattan": 22.5,          # Con Edison
+    "Yonkers": 21.0,            # Con Edison
+    "Buffalo": 16.5,            # National Grid — lower than NYC
+    "Rochester": 16.0,          # National Grid
+    # Oregon
+    "Portland": 10.2,           # Portland General Electric — low due to hydro
+    "Salem": 10.0,              # Pacific Power
+    "Eugene": 9.5,              # Eugene Water & Electric Board (EWEB) — municipal
+    # Nevada
+    "Las Vegas": 12.5,          # NV Energy
+    "Reno": 12.2,               # NV Energy
+    # Illinois
+    "Chicago": 13.0,            # ComEd
+    # Colorado
+    "Denver": 12.8,             # Xcel Energy
+    "Boulder": 12.5,            # Xcel Energy / Xcel (city buyout in progress)
+    # Wisconsin
+    "Madison": 14.5,            # Madison Gas & Electric
+    "Milwaukee": 14.2,          # We Energies
+    # Massachusetts
+    "Boston": 24.0,             # Eversource — high cost NE market
+    "Worcester": 23.5,          # Eversource
+    # Minnesota
+    "Minneapolis": 13.0,        # Xcel Energy
+    "St. Paul": 13.0,           # Xcel Energy
+    # Hawaii
+    "Honolulu": 33.0,           # Hawaiian Electric (HECO) — highest US rates after HI
 }
 
 # City-specific utility provider overrides (fallback when OpenEI API is unavailable)
@@ -931,6 +1140,192 @@ CITY_UTILITY_PROVIDERS = {
     "Escondido":          "San Diego Gas & Electric (SDG&E)",
     "Vista":              "San Diego Gas & Electric (SDG&E)",
     "San Marcos":         "San Diego Gas & Electric (SDG&E)",
+    # Texas
+    "Houston":            "CenterPoint Energy",
+    "Pasadena":           "CenterPoint Energy",
+    "Baytown":            "CenterPoint Energy",
+    "Sugar Land":         "CenterPoint Energy",
+    "Pearland":           "CenterPoint Energy",
+    "League City":        "CenterPoint Energy",
+    "Beaumont":           "Entergy Texas",
+    "Dallas":             "Oncor Electric Delivery",
+    "Fort Worth":         "Oncor Electric Delivery",
+    "Arlington":          "Oncor Electric Delivery",
+    "Plano":              "Oncor Electric Delivery",
+    "Garland":            "Oncor Electric Delivery",
+    "Irving":             "Oncor Electric Delivery",
+    "Carrollton":         "Oncor Electric Delivery",
+    "McKinney":           "Oncor Electric Delivery",
+    "Frisco":             "Oncor Electric Delivery",
+    "Grand Prairie":      "Oncor Electric Delivery",
+    "Denton":             "Oncor Electric Delivery",
+    "Waco":               "Oncor Electric Delivery / ERCOT",
+    "Austin":             "Austin Energy (City of Austin)",
+    "Round Rock":         "Austin Energy (City of Austin)",
+    "Cedar Park":         "Austin Energy / Oncor",
+    "Georgetown":         "Georgetown Utility Systems",
+    "San Antonio":        "CPS Energy (City Public Service)",
+    "Laredo":             "AEP Texas",
+    "El Paso":            "El Paso Electric",
+    "Lubbock":            "Lubbock Power & Light (LP&L)",
+    "Amarillo":           "Xcel Energy (Southwestern Public Service)",
+    "Midland":            "AEP Texas",
+    "Odessa":             "Oncor Electric Delivery",
+    "Corpus Christi":     "AEP Texas",
+    # New York
+    "New York City":      "Consolidated Edison (Con Edison)",
+    "Brooklyn":           "Consolidated Edison (Con Edison)",
+    "Queens":             "Consolidated Edison (Con Edison)",
+    "Bronx":              "Consolidated Edison (Con Edison)",
+    "Manhattan":          "Consolidated Edison (Con Edison)",
+    "Staten Island":      "Consolidated Edison (Con Edison)",
+    "Yonkers":            "Consolidated Edison (Con Edison)",
+    "New Rochelle":       "Consolidated Edison (Con Edison)",
+    "Mount Vernon":       "Consolidated Edison (Con Edison)",
+    "Buffalo":            "National Grid",
+    "Rochester":          "Rochester Gas & Electric (RG&E) / National Grid",
+    "Syracuse":           "National Grid",
+    "Albany":             "National Grid",
+    "Schenectady":        "National Grid",
+    "Utica":              "National Grid",
+    "Binghamton":         "NYSEG",
+    # Florida
+    "Miami":              "Florida Power & Light (FPL) / NextEra",
+    "Fort Lauderdale":    "Florida Power & Light (FPL) / NextEra",
+    "Boca Raton":         "Florida Power & Light (FPL) / NextEra",
+    "West Palm Beach":    "Florida Power & Light (FPL) / NextEra",
+    "Hollywood":          "Florida Power & Light (FPL) / NextEra",
+    "Hialeah":            "Florida Power & Light (FPL) / NextEra",
+    "Pompano Beach":      "Florida Power & Light (FPL) / NextEra",
+    "Coral Springs":      "Florida Power & Light (FPL) / NextEra",
+    "Pembroke Pines":     "Florida Power & Light (FPL) / NextEra",
+    "Miramar":            "Florida Power & Light (FPL) / NextEra",
+    "Tampa":              "Tampa Electric (TECO) / Duke Energy Florida",
+    "St. Petersburg":     "Duke Energy Florida",
+    "Clearwater":         "Duke Energy Florida",
+    "Lakeland":           "Lakeland Electric (municipal)",
+    "Orlando":            "Duke Energy Florida / OUC (Orlando Utilities Commission)",
+    "Kissimmee":          "OUC (Orlando Utilities Commission)",
+    "Jacksonville":       "JEA (Jacksonville Electric Authority)",
+    "Tallahassee":        "Tallahassee Electric (City of Tallahassee)",
+    "Pensacola":          "Gulf Power / Southern Company",
+    # Illinois
+    "Chicago":            "ComEd (Commonwealth Edison / Exelon)",
+    "Aurora":             "ComEd (Commonwealth Edison / Exelon)",
+    "Naperville":         "ComEd (Commonwealth Edison / Exelon)",
+    "Joliet":             "ComEd (Commonwealth Edison / Exelon)",
+    "Rockford":           "ComEd (Commonwealth Edison / Exelon)",
+    "Peoria":             "Ameren Illinois",
+    "Springfield":        "Ameren Illinois",
+    "Champaign":          "Ameren Illinois",
+    # Washington State
+    "Seattle":            "Seattle City Light (SCL) — Municipal",
+    "Tacoma":             "Tacoma Power — Municipal",
+    "Bellevue":           "Puget Sound Energy (PSE)",
+    "Kent":               "Puget Sound Energy (PSE)",
+    "Everett":            "Snohomish County PUD",
+    "Vancouver":          "Clark Public Utilities",
+    "Spokane":            "Avista Utilities",
+    "Kennewick":          "Benton PUD",
+    "Yakima":             "Pacific Power",
+    "Federal Way":        "Puget Sound Energy (PSE)",
+    "Redmond":            "Puget Sound Energy (PSE)",
+    # Pennsylvania
+    "Philadelphia":       "PECO (Exelon)",
+    "Pittsburgh":         "Duquesne Light / West Penn Power",
+    "Allentown":          "PPL Electric Utilities",
+    "Reading":            "PPL Electric Utilities",
+    "Scranton":           "PPL Electric Utilities",
+    "Erie":               "Penelec (FirstEnergy)",
+    # Georgia
+    "Atlanta":            "Georgia Power (Southern Company)",
+    "Augusta":            "Georgia Power (Southern Company)",
+    "Savannah":           "Georgia Power (Southern Company)",
+    "Columbus":           "Georgia Power (Southern Company)",
+    "Macon":              "Georgia Power (Southern Company)",
+    # Colorado
+    "Denver":             "Xcel Energy (Public Service Company of Colorado)",
+    "Colorado Springs":   "Colorado Springs Utilities (municipal)",
+    "Aurora":             "Xcel Energy (Public Service Company of Colorado)",
+    "Boulder":            "Xcel Energy (Public Service Company of Colorado)",
+    "Fort Collins":       "Fort Collins Utilities (municipal)",
+    "Pueblo":             "Black Hills Energy",
+    "Grand Junction":     "Xcel Energy / Grand Valley Power",
+    # Michigan
+    "Detroit":            "DTE Energy",
+    "Grand Rapids":       "Consumers Energy",
+    "Warren":             "DTE Energy",
+    "Sterling Heights":   "DTE Energy",
+    "Ann Arbor":          "DTE Energy",
+    "Lansing":            "Board of Water & Light (BWL) — Municipal",
+    # North Carolina
+    "Charlotte":          "Duke Energy Carolinas",
+    "Raleigh":            "Duke Energy Progress",
+    "Durham":             "Duke Energy Progress",
+    "Greensboro":         "Duke Energy Progress",
+    "Winston-Salem":      "Duke Energy Carolinas",
+    "Fayetteville":       "Duke Energy Progress",
+    # Ohio
+    "Columbus":           "AEP Ohio / Columbus Southern Power",
+    "Cleveland":          "FirstEnergy (Cleveland Electric Illuminating)",
+    "Cincinnati":         "Duke Energy Ohio",
+    "Toledo":             "FirstEnergy (Toledo Edison)",
+    # Virginia
+    "Virginia Beach":     "Dominion Energy Virginia",
+    "Norfolk":            "Dominion Energy Virginia",
+    "Richmond":           "Dominion Energy Virginia",
+    "Alexandria":         "Dominion Energy Virginia",
+    "Chesapeake":         "Dominion Energy Virginia",
+    # Arizona
+    "Phoenix":            "Arizona Public Service (APS)",
+    "Mesa":               "Salt River Project (SRP)",
+    "Chandler":           "Salt River Project (SRP) / APS",
+    "Scottsdale":         "Arizona Public Service (APS)",
+    "Glendale":           "Arizona Public Service (APS)",
+    "Tucson":             "Tucson Electric Power (TEP)",
+    "Tempe":              "Salt River Project (SRP)",
+    "Peoria":             "Arizona Public Service (APS)",
+    "Flagstaff":          "Arizona Public Service (APS)",
+    "Yuma":               "Arizona Public Service (APS)",
+    # Nevada
+    "Las Vegas":          "NV Energy (Nevada Power)",
+    "Henderson":          "NV Energy (Nevada Power)",
+    "North Las Vegas":    "NV Energy (Nevada Power)",
+    "Reno":               "NV Energy (Sierra Pacific Power)",
+    "Sparks":             "NV Energy (Sierra Pacific Power)",
+    "Carson City":        "NV Energy (Sierra Pacific Power)",
+    # Oregon
+    "Portland":           "Portland General Electric (PGE)",
+    "Salem":              "Pacific Power (PacifiCorp)",
+    "Eugene":             "Eugene Water & Electric Board (EWEB) — Municipal",
+    "Bend":               "Pacific Power (PacifiCorp)",
+    "Hillsboro":          "Portland General Electric (PGE)",
+    "Gresham":            "Portland General Electric (PGE)",
+    # Wisconsin
+    "Milwaukee":          "We Energies (WPS Group)",
+    "Madison":            "Madison Gas and Electric (MGE)",
+    "Green Bay":          "WPS (Wisconsin Public Service)",
+    "Kenosha":            "We Energies (WPS Group)",
+    "Racine":             "We Energies (WPS Group)",
+    # Massachusetts
+    "Boston":             "Eversource Energy",
+    "Worcester":          "Eversource Energy",
+    "Cambridge":          "Eversource Energy",
+    "Lowell":             "Eversource Energy",
+    "Springfield":        "Eversource Energy / National Grid",
+    # Minnesota
+    "Minneapolis":        "Xcel Energy (NSP Minnesota)",
+    "St. Paul":           "Xcel Energy (NSP Minnesota)",
+    "Rochester":          "Rochester Public Utilities (municipal)",
+    "Duluth":             "Minnesota Power",
+    # Hawaii
+    "Honolulu":           "Hawaiian Electric (HECO)",
+    "Hilo":               "Hawaii Electric Light (HELCO)",
+    "Kahului":            "Maui Electric (MECO)",
+    # Alaska
+    "Anchorage":          "Chugach Electric Association",
+    "Fairbanks":          "Fairbanks Municipal Utilities System",
+    "Juneau":             "Alaska Electric Light & Power (AEL&P)",
 }
 
 STATE_CLIMATE = {
