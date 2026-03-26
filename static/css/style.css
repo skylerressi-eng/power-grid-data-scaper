@@ -1030,3 +1030,134 @@ footer a:hover { color: var(--blue); }
   margin-top: 8px;
   min-height: 1.4em;
 }
+
+/* ── Simulation Count Modal ───────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn .15s ease;
+}
+.modal-overlay.hidden { display: none; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.2rem 1.8rem;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  animation: slideUp .18s ease;
+}
+@keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: .45rem;
+}
+
+.modal-desc {
+  font-size: .85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.4rem;
+}
+
+.sim-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .6rem;
+  margin-bottom: 1.2rem;
+}
+
+.sim-preset-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: .7rem .5rem .5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
+  transition: background .12s, border-color .12s, transform .1s;
+}
+.sim-preset-btn:hover {
+  background: var(--accent);
+  border-color: var(--blue);
+  transform: translateY(-1px);
+}
+.sim-preset-btn.sim-preset-selected {
+  background: var(--accent);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(88,166,255,.35);
+}
+.sim-preset-default {
+  border-color: var(--blue);
+}
+.preset-sub {
+  font-size: .65rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.sim-preset-btn:hover .preset-sub,
+.sim-preset-btn.sim-preset-selected .preset-sub { color: rgba(255,255,255,.7); }
+
+.sim-custom-row {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin-bottom: 1.1rem;
+}
+.sim-custom-label {
+  font-size: .85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.sim-custom-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: .95rem;
+  padding: .45rem .7rem;
+  outline: none;
+  transition: border-color .12s;
+}
+.sim-custom-input:focus { border-color: var(--blue); }
+.sim-custom-go {
+  padding: .45rem 1.1rem;
+  font-size: .9rem;
+}
+
+.modal-cancel {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: .85rem;
+  padding: .45rem;
+  cursor: pointer;
+  transition: border-color .12s, color .12s;
+}
+.modal-cancel:hover { border-color: var(--text-muted); color: var(--text); }

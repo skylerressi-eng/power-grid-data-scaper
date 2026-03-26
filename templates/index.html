@@ -482,6 +482,28 @@
 
 </main>
 
+<!-- ── Simulation Count Modal ──────────────────────────────────────────── -->
+<div id="sim-count-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="sim-modal-title">
+  <div class="modal-box">
+    <h2 id="sim-modal-title" class="modal-title">⚡ How many simulations?</h2>
+    <p class="modal-desc">More simulations = more accurate averages. Pick a preset or enter a custom number.</p>
+    <div class="sim-preset-grid">
+      <button class="sim-preset-btn" data-count="10">10 <span class="preset-sub">Quick</span></button>
+      <button class="sim-preset-btn" data-count="25">25 <span class="preset-sub">Fast</span></button>
+      <button class="sim-preset-btn" data-count="50">50 <span class="preset-sub">Balanced</span></button>
+      <button class="sim-preset-btn sim-preset-default" data-count="100">100 <span class="preset-sub">Recommended</span></button>
+      <button class="sim-preset-btn" data-count="200">200 <span class="preset-sub">Detailed</span></button>
+      <button class="sim-preset-btn" data-count="500">500 <span class="preset-sub">Thorough</span></button>
+    </div>
+    <div class="sim-custom-row">
+      <label for="sim-custom-input" class="sim-custom-label">Custom:</label>
+      <input type="number" id="sim-custom-input" class="sim-custom-input" min="1" max="500" placeholder="e.g. 150" />
+      <button id="sim-custom-go-btn" class="btn-primary sim-custom-go">Run</button>
+    </div>
+    <button id="sim-modal-cancel" class="modal-cancel">Cancel</button>
+  </div>
+</div>
+
 <footer>
   <p>
     Data: <a href="https://www.eia.gov/opendata/" target="_blank">U.S. EIA Open Data API</a>
