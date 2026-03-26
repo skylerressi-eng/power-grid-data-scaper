@@ -31,6 +31,10 @@ const resultsDiv    = document.getElementById('results');
 const errorBanner   = document.getElementById('error-banner');
 const errorText     = document.getElementById('error-text');
 
+// ── City fetch state — prevents race conditions ───────────────────────────
+let _cityAbortCtrl   = null;
+let _regionLoading   = false; // true while we're setting up regionSelect programmatically
+
 // ── Init: load states ─────────────────────────────────────────────────────
 (async function init() {
   try {
@@ -47,91 +51,93 @@ const errorText     = document.getElementById('error-text');
   }
 })();
 
-// ── State change → load regions + ALL cities immediately ─────────────────
-stateSelect.addEventListener('change', async () => {
-  const state = stateSelect.value;
-  regionSelect.innerHTML = '<option value="" disabled selected>Loading…</option>';
-  regionSelect.disabled = true;
+// ── City fetch helper (with abort to prevent race conditions) ─────────────
+function fetchAndPopulateCities(state, region, restoreValue) {
+  if (_cityAbortCtrl) { _cityAbortCtrl.abort(); }
+  _cityAbortCtrl = new AbortController();
+
   citySelect.innerHTML = '<option value="" disabled selected>Loading cities…</option>';
   citySelect.disabled = true;
   analyzeBtn.disabled = true;
+
+  const url = `/api/cities?state=${encodeURIComponent(state)}&region=${encodeURIComponent(region || 'All Cities')}`;
+  fetch(url, { signal: _cityAbortCtrl.signal })
+    .then(r => r.json())
+    .then(cities => { populateCityDropdown(cities, restoreValue); })
+    .catch(e => {
+      if (e.name === 'AbortError') return; // superseded by newer request
+      citySelect.innerHTML = '<option value="">— Select City —</option>';
+      citySelect.disabled = false;
+      showError('Failed to load cities: ' + e.message);
+    });
+}
+
+// ── State change → load regions, then ALL cities immediately ──────────────
+stateSelect.addEventListener('change', async () => {
+  const state = stateSelect.value;
   hideError();
+  analyzeBtn.disabled = true;
+
+  // Reset dropdowns
+  _regionLoading = true;
+  regionSelect.innerHTML = '<option value="All Cities" selected>All Cities</option>';
+  regionSelect.disabled = true;
+  _regionLoading = false;
 
   if (!state) {
-    regionSelect.innerHTML = '<option value="">— Select Area —</option>';
     citySelect.innerHTML = '<option value="">— Select City —</option>';
+    citySelect.disabled = true;
     return;
   }
 
-  // Load regions and all cities in parallel
-  try {
-    const [regRes, cityRes] = await Promise.all([
-      fetch(`/api/regions?state=${encodeURIComponent(state)}`),
-      fetch(`/api/cities?state=${encodeURIComponent(state)}&region=All+Cities`),
-    ]);
-    const regions = await regRes.json();
-    const allCities = await cityRes.json();
+  // Immediately start loading all cities (don't wait for regions)
+  fetchAndPopulateCities(state, 'All Cities');
 
-    // Populate region dropdown
+  // Load regions in parallel (purely cosmetic — doesn't gate cities)
+  try {
+    const res = await fetch(`/api/regions?state=${encodeURIComponent(state)}`);
+    const regions = await res.json();
+
+    _regionLoading = true; // suppress the change event during setup
     regionSelect.innerHTML = '';
+    const allOpt = document.createElement('option');
+    allOpt.value = 'All Cities';
+    allOpt.textContent = `All ${state} Cities`;
+    regionSelect.appendChild(allOpt);
+
     if (Array.isArray(regions) && regions.length > 1) {
-      const allOpt = document.createElement('option');
-      allOpt.value = 'All Cities';
-      allOpt.textContent = `All ${state} Cities`;
-      allOpt.selected = true;
-      regionSelect.appendChild(allOpt);
       regions.forEach(r => {
         const opt = document.createElement('option');
         opt.value = r;
         opt.textContent = r;
         regionSelect.appendChild(opt);
       });
-    } else {
-      // Single-region state — just show one option
-      const label = (Array.isArray(regions) && regions[0]) || `All ${state}`;
-      const opt = document.createElement('option');
-      opt.value = 'All Cities';
-      opt.textContent = label;
-      regionSelect.appendChild(opt);
     }
+    regionSelect.value = 'All Cities';
     regionSelect.disabled = false;
-
-    // Populate cities immediately (all cities, unfiltered)
-    populateCityDropdown(allCities);
+    _regionLoading = false;
   } catch (e) {
+    _regionLoading = false;
     regionSelect.innerHTML = '<option value="All Cities">All Cities</option>';
     regionSelect.disabled = false;
-    citySelect.innerHTML = '<option value="">— Select City —</option>';
-    showError('Failed to load locations: ' + e.message);
   }
 });
 
-// ── Region change → filter city list ─────────────────────────────────────
-regionSelect.addEventListener('change', async () => {
+// ── Region change → re-fetch filtered cities ──────────────────────────────
+regionSelect.addEventListener('change', () => {
+  if (_regionLoading) return; // skip programmatic changes
   const state = stateSelect.value;
-  const region = regionSelect.value;
   if (!state) return;
+  const region = regionSelect.value || 'All Cities';
   const prevCity = citySelect.value;
-  citySelect.innerHTML = '<option value="" disabled selected>Loading…</option>';
-  citySelect.disabled = true;
-  analyzeBtn.disabled = true;
-  try {
-    const url = `/api/cities?state=${encodeURIComponent(state)}&region=${encodeURIComponent(region)}`;
-    const res = await fetch(url);
-    const cities = await res.json();
-    populateCityDropdown(cities, prevCity);
-  } catch (e) {
-    citySelect.innerHTML = '<option value="">— Select City —</option>';
-    citySelect.disabled = false;
-    showError('Failed to filter cities: ' + e.message);
-  }
+  fetchAndPopulateCities(state, region, prevCity);
 });
 
 function populateCityDropdown(cities, restoreValue) {
   citySelect.innerHTML = '';
   const placeholder = document.createElement('option');
   placeholder.value = '';
-  placeholder.textContent = '— Select City —';
+  placeholder.textContent = cities && cities.length ? '— Select City —' : '— No cities found —';
   citySelect.appendChild(placeholder);
 
   if (!Array.isArray(cities) || cities.length === 0) {
@@ -146,7 +152,6 @@ function populateCityDropdown(cities, restoreValue) {
     citySelect.appendChild(opt);
   });
   citySelect.disabled = false;
-  // Restore previously selected city if it still exists in the filtered list
   if (restoreValue && cities.includes(restoreValue)) {
     citySelect.value = restoreValue;
     analyzeBtn.disabled = false;
@@ -649,44 +654,48 @@ const ALGO_STEPS = [
 
 // ── Simulation Count Modal ─────────────────────────────────────────────────
 (function initSimModal() {
-  const modal         = document.getElementById('sim-count-modal');
-  const presetBtns    = modal.querySelectorAll('.sim-preset-btn');
-  const customInput   = document.getElementById('sim-custom-input');
-  const customGoBtn   = document.getElementById('sim-custom-go-btn');
-  const cancelBtn     = document.getElementById('sim-modal-cancel');
-  const maxSimsInput  = document.getElementById('max-sims-input');
+  const modal        = document.getElementById('sim-count-modal');
+  const presetBtns   = modal.querySelectorAll('.sim-preset-btn');
+  const customInput  = document.getElementById('sim-custom-input');
+  const customGoBtn  = document.getElementById('sim-custom-go-btn');
+  const cancelBtn    = document.getElementById('sim-modal-cancel');
+  const maxSimsInput = document.getElementById('max-sims-input');
 
-  let selectedCount = 100; // default
+  let _mode = 'both'; // 'both' = algo+sims, 'sims' = sims only
 
-  function openModal() {
-    selectedCount = parseInt(maxSimsInput?.value) || 100;
-    // Highlight whichever preset matches current value
+  function openModal(mode) {
+    _mode = mode || 'both';
+    const curVal = parseInt(maxSimsInput?.value) || 100;
     presetBtns.forEach(b => {
-      b.classList.toggle('sim-preset-selected', parseInt(b.dataset.count) === selectedCount);
+      b.classList.toggle('sim-preset-selected', parseInt(b.dataset.count) === curVal);
     });
     customInput.value = '';
     modal.classList.remove('hidden');
-    // Auto-focus the default (100) button
-    const defaultBtn = modal.querySelector(`[data-count="100"]`);
-    if (defaultBtn) defaultBtn.focus();
+    document.body.style.overflow = 'hidden';
+    // Focus the highlighted preset or the 100 button
+    const highlight = modal.querySelector('.sim-preset-selected') ||
+                      modal.querySelector('[data-count="100"]');
+    if (highlight) highlight.focus();
   }
 
-  function closeModal() { modal.classList.add('hidden'); }
+  function closeModal() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
 
   function confirmAndRun(count) {
     count = Math.max(1, Math.min(500, parseInt(count) || 100));
     if (maxSimsInput) maxSimsInput.value = count;
     closeModal();
-    runOptimizer();   // animate the algorithm steps
-    runSimulations(); // run Monte Carlo with chosen count
+    if (_mode === 'both') runOptimizer(); // show animated steps
+    runSimulations();                     // run Monte Carlo
   }
 
   presetBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       presetBtns.forEach(b => b.classList.remove('sim-preset-selected'));
       btn.classList.add('sim-preset-selected');
-      selectedCount = parseInt(btn.dataset.count);
-      confirmAndRun(selectedCount);
+      confirmAndRun(parseInt(btn.dataset.count));
     });
   });
 
@@ -700,17 +709,15 @@ const ALGO_STEPS = [
   });
 
   cancelBtn.addEventListener('click', closeModal);
-
-  // Close on overlay click (outside modal box)
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  // Expose openModal so the button can call it
   window._openSimModal = openModal;
 })();
 
 document.getElementById('start-algo-btn').addEventListener('click', () => {
   if (!lastOptData) return;
-  window._openSimModal();
+  window._openSimModal('both');
 });
 
 function runOptimizer() {
@@ -840,7 +847,11 @@ function resetOptimizer() {
 // ── Goal-Based Simulation Engine ──────────────────────────────────────────
 let simChart = null;
 
-document.getElementById('run-sims-btn').addEventListener('click', runSimulations);
+// "Run Simulations" button also opens the sim-count modal
+document.getElementById('run-sims-btn').addEventListener('click', () => {
+  if (!lastOptData) return;
+  window._openSimModal('sims'); // 'sims' = only run simulations (not optimizer)
+});
 
 async function runSimulations() {
   if (!lastOptData) return;
