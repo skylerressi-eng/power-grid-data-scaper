@@ -77,6 +77,117 @@ STATE_GENERATION_PROFILES = {
     "WY": {"coal": 65, "wind": 20, "natural-gas": 10, "solar": 2, "other": 3},
 }
 
+# City-specific generation mix overrides — used when city's grid differs from state average.
+# Reflects local utility, climate zone, and known renewable/fossil mix differences.
+CITY_GENERATION_PROFILES = {
+    # ── California: Bay Area PG&E territory ──────────────────────────────────
+    # Palo Alto: City of Palo Alto Utilities (CPAU) — 100% carbon-free portfolio
+    "Palo Alto":      {"hydro": 45, "nuclear": 25, "solar": 15, "wind": 10, "geothermal": 5},
+    # San Francisco: PG&E + CleanPowerSF — high renewables, some gas peakers
+    "San Francisco":  {"natural-gas": 30, "hydro": 18, "solar": 22, "wind": 15, "nuclear": 8, "other": 7},
+    # Oakland / Berkeley / East Bay: PG&E + East Bay Community Energy
+    "Oakland":        {"natural-gas": 35, "hydro": 12, "solar": 20, "wind": 12, "nuclear": 8, "other": 13},
+    "Berkeley":       {"natural-gas": 32, "hydro": 12, "solar": 22, "wind": 14, "nuclear": 8, "other": 12},
+    "Richmond":       {"natural-gas": 45, "hydro": 10, "solar": 15, "wind": 10, "nuclear": 8, "other": 12},
+    # Bay Area South (PG&E / Silicon Valley Clean Energy)
+    "San Jose":       {"natural-gas": 38, "hydro": 10, "solar": 22, "wind": 11, "nuclear": 8, "other": 11},
+    "Los Altos":      {"natural-gas": 37, "hydro": 10, "solar": 23, "wind": 12, "nuclear": 9, "other": 9},
+    "Mountain View":  {"natural-gas": 36, "hydro": 10, "solar": 24, "wind": 12, "nuclear": 9, "other": 9},
+    "Sunnyvale":      {"natural-gas": 36, "hydro": 10, "solar": 24, "wind": 12, "nuclear": 9, "other": 9},
+    "Cupertino":      {"natural-gas": 36, "hydro": 10, "solar": 24, "wind": 12, "nuclear": 9, "other": 9},
+    "Santa Clara":    {"natural-gas": 36, "hydro": 10, "solar": 24, "wind": 12, "nuclear": 9, "other": 9},
+    "Fremont":        {"natural-gas": 38, "hydro": 10, "solar": 22, "wind": 12, "nuclear": 8, "other": 10},
+    "Menlo Park":     {"natural-gas": 36, "hydro": 10, "solar": 24, "wind": 12, "nuclear": 9, "other": 9},
+    "Redwood City":   {"natural-gas": 37, "hydro": 10, "solar": 23, "wind": 12, "nuclear": 9, "other": 9},
+    "San Mateo":      {"natural-gas": 38, "hydro": 10, "solar": 22, "wind": 12, "nuclear": 9, "other": 9},
+    "Burlingame":     {"natural-gas": 38, "hydro": 10, "solar": 22, "wind": 12, "nuclear": 9, "other": 9},
+    "Daly City":      {"natural-gas": 39, "hydro": 10, "solar": 21, "wind": 12, "nuclear": 8, "other": 10},
+    "South San Francisco": {"natural-gas": 39, "hydro": 10, "solar": 21, "wind": 12, "nuclear": 8, "other": 10},
+    "East Palo Alto": {"natural-gas": 38, "hydro": 10, "solar": 22, "wind": 12, "nuclear": 9, "other": 9},
+    # Bay Area East (PG&E, hotter/inland)
+    "Hayward":        {"natural-gas": 40, "hydro": 10, "solar": 20, "wind": 11, "nuclear": 8, "other": 11},
+    "Fremont":        {"natural-gas": 38, "hydro": 10, "solar": 22, "wind": 12, "nuclear": 8, "other": 10},
+    "Pleasanton":     {"natural-gas": 40, "hydro": 10, "solar": 20, "wind": 11, "nuclear": 8, "other": 11},
+    "Livermore":      {"natural-gas": 42, "hydro": 9, "solar": 19, "wind": 11, "nuclear": 8, "other": 11},
+    "Concord":        {"natural-gas": 42, "hydro": 9, "solar": 18, "wind": 11, "nuclear": 8, "other": 12},
+    "Walnut Creek":   {"natural-gas": 41, "hydro": 9, "solar": 19, "wind": 11, "nuclear": 8, "other": 12},
+    "San Ramon":      {"natural-gas": 40, "hydro": 10, "solar": 20, "wind": 11, "nuclear": 8, "other": 11},
+    "Antioch":        {"natural-gas": 46, "hydro": 8, "solar": 16, "wind": 10, "nuclear": 7, "other": 13},
+    # North Bay (PG&E)
+    "Vallejo":        {"natural-gas": 40, "hydro": 11, "solar": 19, "wind": 12, "nuclear": 8, "other": 10},
+    "Napa":           {"natural-gas": 38, "hydro": 12, "solar": 20, "wind": 12, "nuclear": 8, "other": 10},
+    "Santa Rosa":     {"natural-gas": 38, "hydro": 12, "solar": 20, "wind": 12, "nuclear": 8, "other": 10},
+    "Petaluma":       {"natural-gas": 38, "hydro": 12, "solar": 20, "wind": 12, "nuclear": 8, "other": 10},
+    "Novato":         {"natural-gas": 38, "hydro": 12, "solar": 20, "wind": 12, "nuclear": 8, "other": 10},
+    "San Rafael":     {"natural-gas": 37, "hydro": 12, "solar": 21, "wind": 12, "nuclear": 8, "other": 10},
+    "Fairfield":      {"natural-gas": 40, "hydro": 11, "solar": 19, "wind": 12, "nuclear": 8, "other": 10},
+    "Vacaville":      {"natural-gas": 40, "hydro": 11, "solar": 19, "wind": 12, "nuclear": 8, "other": 10},
+    # ── California: Central Valley (PG&E, natural-gas heavy) ─────────────────
+    "Stockton":       {"natural-gas": 52, "hydro": 8, "solar": 15, "wind": 7, "nuclear": 7, "other": 11},
+    "Modesto":        {"natural-gas": 50, "hydro": 8, "solar": 16, "wind": 8, "nuclear": 7, "other": 11},
+    "Fresno":         {"natural-gas": 50, "hydro": 8, "solar": 17, "wind": 7, "nuclear": 8, "other": 10},
+    "Visalia":        {"natural-gas": 50, "hydro": 7, "solar": 17, "wind": 7, "nuclear": 8, "other": 11},
+    "Bakersfield":    {"natural-gas": 58, "hydro": 5, "solar": 14, "wind": 5, "nuclear": 6, "other": 12},
+    "Turlock":        {"natural-gas": 50, "hydro": 8, "solar": 16, "wind": 8, "nuclear": 7, "other": 11},
+    "Merced":         {"natural-gas": 50, "hydro": 8, "solar": 16, "wind": 8, "nuclear": 7, "other": 11},
+    "Chico":          {"natural-gas": 47, "hydro": 11, "solar": 17, "wind": 7, "nuclear": 7, "other": 11},
+    "Redding":        {"natural-gas": 44, "hydro": 14, "solar": 18, "wind": 7, "nuclear": 7, "other": 10},
+    "Salinas":        {"natural-gas": 44, "hydro": 10, "solar": 17, "wind": 12, "nuclear": 7, "other": 10},
+    "Hanford":        {"natural-gas": 50, "hydro": 7, "solar": 17, "wind": 7, "nuclear": 8, "other": 11},
+    # ── California: Sacramento area (SMUD — public utility, more nuclear/hydro) ──
+    "Sacramento":     {"natural-gas": 25, "nuclear": 25, "hydro": 20, "solar": 20, "wind": 8, "other": 2},
+    "Elk Grove":      {"natural-gas": 25, "nuclear": 25, "hydro": 20, "solar": 20, "wind": 8, "other": 2},
+    "Folsom":         {"natural-gas": 25, "nuclear": 25, "hydro": 20, "solar": 20, "wind": 8, "other": 2},
+    "Davis":          {"natural-gas": 25, "nuclear": 25, "hydro": 20, "solar": 20, "wind": 8, "other": 2},
+    "Roseville":      {"natural-gas": 28, "nuclear": 20, "hydro": 20, "solar": 22, "wind": 8, "other": 2},
+    "Rocklin":        {"natural-gas": 28, "nuclear": 20, "hydro": 20, "solar": 22, "wind": 8, "other": 2},
+    "Woodland":       {"natural-gas": 38, "hydro": 12, "solar": 19, "wind": 11, "nuclear": 8, "other": 12},
+    # ── California: Los Angeles area (LADWP + SCE) ───────────────────────────
+    "Los Angeles":    {"natural-gas": 42, "hydro": 12, "solar": 20, "wind": 8, "nuclear": 8, "other": 10},
+    "Long Beach":     {"natural-gas": 45, "hydro": 10, "solar": 18, "wind": 7, "nuclear": 8, "other": 12},
+    "Glendale":       {"natural-gas": 40, "hydro": 12, "solar": 20, "wind": 8, "nuclear": 10, "other": 10},
+    "Burbank":        {"natural-gas": 40, "hydro": 12, "solar": 20, "wind": 8, "nuclear": 10, "other": 10},
+    "Pasadena":       {"natural-gas": 38, "hydro": 12, "solar": 22, "wind": 8, "nuclear": 10, "other": 10},
+    "Beverly Hills":  {"natural-gas": 42, "hydro": 10, "solar": 20, "wind": 8, "nuclear": 8, "other": 12},
+    "Santa Monica":   {"natural-gas": 38, "hydro": 10, "solar": 25, "wind": 8, "nuclear": 8, "other": 11},
+    "Torrance":       {"natural-gas": 44, "hydro": 10, "solar": 18, "wind": 7, "nuclear": 8, "other": 13},
+    "El Monte":       {"natural-gas": 45, "hydro": 9, "solar": 17, "wind": 7, "nuclear": 8, "other": 14},
+    "Pomona":         {"natural-gas": 46, "hydro": 8, "solar": 17, "wind": 7, "nuclear": 8, "other": 14},
+    # ── California: Inland SoCal (SCE, hotter, drier) ────────────────────────
+    "Anaheim":        {"natural-gas": 44, "hydro": 8, "solar": 18, "wind": 8, "nuclear": 10, "other": 12},
+    "Riverside":      {"natural-gas": 46, "hydro": 6, "solar": 20, "wind": 8, "nuclear": 8, "other": 12},
+    "San Bernardino": {"natural-gas": 48, "hydro": 6, "solar": 18, "wind": 8, "nuclear": 8, "other": 12},
+    "Fontana":        {"natural-gas": 48, "hydro": 6, "solar": 18, "wind": 8, "nuclear": 8, "other": 12},
+    "Rancho Cucamonga": {"natural-gas": 46, "hydro": 7, "solar": 19, "wind": 8, "nuclear": 8, "other": 12},
+    "Victorville":    {"natural-gas": 44, "hydro": 6, "solar": 22, "wind": 10, "nuclear": 8, "other": 10},
+    "Irvine":         {"natural-gas": 44, "hydro": 8, "solar": 20, "wind": 8, "nuclear": 10, "other": 10},
+    "Santa Ana":      {"natural-gas": 44, "hydro": 8, "solar": 18, "wind": 8, "nuclear": 10, "other": 12},
+    "Orange":         {"natural-gas": 44, "hydro": 8, "solar": 18, "wind": 8, "nuclear": 10, "other": 12},
+    "Fullerton":      {"natural-gas": 44, "hydro": 8, "solar": 18, "wind": 8, "nuclear": 10, "other": 12},
+    "Garden Grove":   {"natural-gas": 44, "hydro": 8, "solar": 18, "wind": 8, "nuclear": 10, "other": 12},
+    "Anaheim":        {"natural-gas": 44, "hydro": 8, "solar": 18, "wind": 8, "nuclear": 10, "other": 12},
+    "Murrieta":       {"natural-gas": 44, "hydro": 7, "solar": 21, "wind": 9, "nuclear": 8, "other": 11},
+    "Temecula":       {"natural-gas": 44, "hydro": 7, "solar": 21, "wind": 9, "nuclear": 8, "other": 11},
+    "Mission Viejo":  {"natural-gas": 44, "hydro": 8, "solar": 20, "wind": 8, "nuclear": 10, "other": 10},
+    "Lake Forest":    {"natural-gas": 44, "hydro": 8, "solar": 20, "wind": 8, "nuclear": 10, "other": 10},
+    "Tustin":         {"natural-gas": 44, "hydro": 8, "solar": 20, "wind": 8, "nuclear": 10, "other": 10},
+    # ── California: Ventura / Santa Barbara (SCE) ────────────────────────────
+    "Oxnard":         {"natural-gas": 42, "hydro": 8, "solar": 18, "wind": 10, "nuclear": 10, "other": 12},
+    "Ventura":        {"natural-gas": 40, "hydro": 8, "solar": 20, "wind": 10, "nuclear": 10, "other": 12},
+    "Thousand Oaks":  {"natural-gas": 40, "hydro": 8, "solar": 20, "wind": 10, "nuclear": 10, "other": 12},
+    "Simi Valley":    {"natural-gas": 40, "hydro": 8, "solar": 20, "wind": 10, "nuclear": 10, "other": 12},
+    "Santa Barbara":  {"natural-gas": 38, "hydro": 8, "solar": 22, "wind": 12, "nuclear": 10, "other": 10},
+    # ── California: San Diego (SDG&E — highest solar penetration in CA) ──────
+    "San Diego":      {"natural-gas": 35, "hydro": 8, "solar": 30, "wind": 10, "nuclear": 5, "other": 12},
+    "Chula Vista":    {"natural-gas": 35, "hydro": 8, "solar": 30, "wind": 10, "nuclear": 5, "other": 12},
+    "Oceanside":      {"natural-gas": 34, "hydro": 7, "solar": 30, "wind": 10, "nuclear": 5, "other": 14},
+    "Carlsbad":       {"natural-gas": 33, "hydro": 7, "solar": 31, "wind": 10, "nuclear": 5, "other": 14},
+    "Escondido":      {"natural-gas": 35, "hydro": 7, "solar": 28, "wind": 9, "nuclear": 5, "other": 16},
+    "El Cajon":       {"natural-gas": 36, "hydro": 7, "solar": 28, "wind": 9, "nuclear": 5, "other": 15},
+    "Vista":          {"natural-gas": 34, "hydro": 7, "solar": 30, "wind": 10, "nuclear": 5, "other": 14},
+    "San Marcos":     {"natural-gas": 34, "hydro": 7, "solar": 30, "wind": 10, "nuclear": 5, "other": 14},
+}
+
 # Approximate state-level capacity (MW) and peak demand
 STATE_CAPACITY = {
     "DC": {"capacity": 2500, "peak": 1800, "avg_load": 1100},
@@ -174,6 +285,35 @@ CITY_POPULATIONS = {
     "Stockton": 320, "Irvine": 307, "Chula Vista": 275,
     "Fremont": 230, "San Bernardino": 222, "Modesto": 218,
     "Fontana": 213, "Oxnard": 202,
+    # California — Bay Area Peninsula & South Bay
+    "Palo Alto": 68, "Los Altos": 30, "Mountain View": 82, "Sunnyvale": 156,
+    "Cupertino": 60, "Los Gatos": 34, "Saratoga": 31, "Campbell": 43,
+    "Menlo Park": 35, "Redwood City": 83, "San Mateo": 105, "Burlingame": 30,
+    "San Carlos": 30, "Belmont": 26, "East Palo Alto": 29, "Atherton": 7,
+    "Foster City": 32, "Millbrae": 23, "San Bruno": 44, "South San Francisco": 66,
+    # California — Bay Area East & North Bay
+    "Daly City": 104, "Hayward": 162, "Concord": 131, "Antioch": 119,
+    "Richmond": 116, "Berkeley": 124, "Walnut Creek": 70, "Pleasanton": 79,
+    "Livermore": 90, "San Ramon": 84, "Union City": 72, "Newark": 48,
+    "Alameda": 77, "El Cerrito": 25, "Novato": 54, "San Rafael": 59,
+    "Petaluma": 59, "Santa Rosa": 178, "Napa": 80, "Vallejo": 122,
+    "Fairfield": 120, "Vacaville": 108,
+    # California — Central Valley & Coast
+    "Davis": 67, "Woodland": 59, "Chico": 101, "Redding": 93,
+    "Roseville": 148, "Elk Grove": 176, "Folsom": 79, "Rocklin": 66,
+    "Turlock": 73, "Merced": 86, "Visalia": 136, "Hanford": 56,
+    "Santa Cruz": 62, "Capitola": 10, "Scotts Valley": 12,
+    "Monterey": 30, "Salinas": 163, "San Luis Obispo": 47,
+    "Paso Robles": 32, "Santa Maria": 109,
+    # California — Southern California extras
+    "Santa Barbara": 88, "Ventura": 106, "Thousand Oaks": 126,
+    "Simi Valley": 126, "Glendale": 196, "Pasadena": 141, "Torrance": 147,
+    "Santa Monica": 92, "Beverly Hills": 34, "Burbank": 105, "El Monte": 116,
+    "Pomona": 151, "Rancho Cucamonga": 174, "Victorville": 134,
+    "Garden Grove": 174, "Fullerton": 140, "Orange": 136, "Tustin": 81,
+    "Mission Viejo": 93, "Lake Forest": 84, "El Cajon": 104,
+    "Escondido": 151, "Oceanside": 174, "Carlsbad": 113,
+    "Vista": 100, "San Marcos": 96, "Murrieta": 116, "Temecula": 113,
     # Colorado
     "Denver": 715, "Colorado Springs": 478, "Aurora": 366,
     "Fort Collins": 164, "Lakewood": 155, "Thornton": 136,
@@ -627,6 +767,172 @@ STATE_POPULATIONS = {
 }
 
 # Simple climate zone tag per state (for city context)
+# City-specific climate zone overrides (where significantly different from state average)
+CITY_CLIMATE_ZONES = {
+    # California — Central Valley (hot-dry, not marine)
+    "Stockton": "hot-dry", "Fresno": "hot-dry", "Bakersfield": "hot-dry",
+    "Modesto": "hot-dry", "Turlock": "hot-dry", "Merced": "hot-dry",
+    "Visalia": "hot-dry", "Hanford": "hot-dry", "Chico": "hot-dry",
+    "Redding": "hot-dry", "Sacramento": "hot-dry", "Elk Grove": "hot-dry",
+    "Roseville": "hot-dry", "Folsom": "hot-dry", "Rocklin": "hot-dry",
+    "Davis": "hot-dry", "Woodland": "hot-dry", "Fairfield": "warm-dry",
+    "Vacaville": "warm-dry",
+    # California — Bay Area (marine)
+    "San Francisco": "marine", "Oakland": "marine", "Berkeley": "marine",
+    "Richmond": "marine", "Fremont": "marine", "San Jose": "marine",
+    "Palo Alto": "marine", "Los Altos": "marine", "Mountain View": "marine",
+    "Sunnyvale": "marine", "Cupertino": "marine", "Menlo Park": "marine",
+    "Redwood City": "marine", "San Mateo": "marine", "Burlingame": "marine",
+    "Daly City": "marine", "South San Francisco": "marine", "San Bruno": "marine",
+    "Millbrae": "marine", "Foster City": "marine", "San Carlos": "marine",
+    "Belmont": "marine", "East Palo Alto": "marine", "Atherton": "marine",
+    "Hayward": "marine", "Union City": "marine", "Newark": "marine",
+    "Alameda": "marine", "El Cerrito": "marine", "Petaluma": "marine",
+    "San Rafael": "marine", "Novato": "marine", "Vallejo": "marine",
+    "Napa": "warm-dry", "Santa Rosa": "warm-dry",
+    "Concord": "warm-dry", "Walnut Creek": "warm-dry", "Pleasanton": "warm-dry",
+    "Livermore": "warm-dry", "San Ramon": "warm-dry", "Antioch": "hot-dry",
+    # California — Southern California coastal (Mediterranean)
+    "Los Angeles": "Mediterranean", "Long Beach": "Mediterranean",
+    "Santa Monica": "Mediterranean", "Torrance": "Mediterranean",
+    "Chula Vista": "Mediterranean", "Oceanside": "Mediterranean",
+    "Carlsbad": "Mediterranean", "San Diego": "Mediterranean",
+    "Ventura": "Mediterranean", "Oxnard": "Mediterranean",
+    "Thousand Oaks": "Mediterranean", "Santa Barbara": "Mediterranean",
+    "Irvine": "Mediterranean", "Mission Viejo": "Mediterranean",
+    "Lake Forest": "Mediterranean", "Beverly Hills": "Mediterranean",
+    # California — Inland SoCal (hot-dry)
+    "Riverside": "hot-dry", "San Bernardino": "hot-dry", "Fontana": "hot-dry",
+    "Rancho Cucamonga": "hot-dry", "Victorville": "hot-dry",
+    "Santa Ana": "hot-dry", "Anaheim": "hot-dry", "Orange": "hot-dry",
+    "Fullerton": "hot-dry", "Garden Grove": "hot-dry", "El Cajon": "hot-dry",
+    "Escondido": "hot-dry", "Vista": "hot-dry", "San Marcos": "hot-dry",
+    "Murrieta": "hot-dry", "Temecula": "hot-dry", "Tustin": "hot-dry",
+    "El Monte": "hot-dry", "Pomona": "hot-dry", "Pasadena": "hot-dry",
+    "Burbank": "hot-dry", "Glendale": "Mediterranean", "Simi Valley": "hot-dry",
+}
+
+# City-specific retail electricity prices (cents/kWh) — significant variation within states
+CITY_RETAIL_PRICES = {
+    # California — major utility/rate differences within the state
+    "Palo Alto": 19.8,          # CPAU (City of Palo Alto Utilities) — municipal
+    "Sacramento": 15.5,         # SMUD — public municipal utility, lower than PG&E
+    "Elk Grove": 15.5,          # SMUD territory
+    "Folsom": 15.5,             # SMUD territory
+    "Davis": 15.5,              # SMUD territory
+    "Roseville": 15.2,          # Roseville Electric — municipal, lower rates
+    "Rocklin": 15.2,            # Roseville Electric service area
+    "Los Angeles": 18.5,        # LADWP — public utility, lower than PG&E
+    "Long Beach": 18.5,         # Long Beach Power (municipal) + SCE blend
+    "Glendale": 17.5,           # Glendale Water & Power — municipal
+    "Burbank": 16.5,            # Burbank Water and Power — municipal
+    "Pasadena": 16.8,           # Pasadena Water and Power — municipal
+    "Anaheim": 17.0,            # Anaheim Public Utilities — municipal
+    "Riverside": 15.8,          # Riverside Public Utilities — municipal
+    "San Diego": 34.0,          # SDG&E — highest retail rates in California
+    "Chula Vista": 34.0,        # SDG&E
+    "El Cajon": 34.0,           # SDG&E
+    "Escondido": 34.0,          # SDG&E
+    "Oceanside": 34.0,          # SDG&E
+    "Carlsbad": 34.0,           # SDG&E
+    "Vista": 34.0,              # SDG&E
+    "San Marcos": 34.0,         # SDG&E
+    "Murrieta": 34.0,           # SDG&E
+    "Temecula": 34.0,           # SDG&E
+}
+
+# City-specific utility provider overrides (fallback when OpenEI API is unavailable)
+CITY_UTILITY_PROVIDERS = {
+    # California — Bay Area
+    "Palo Alto":          "City of Palo Alto Utilities (CPAU)",
+    "Los Altos":          "Pacific Gas & Electric (PG&E)",
+    "Mountain View":      "Pacific Gas & Electric (PG&E) / Silicon Valley Clean Energy",
+    "Sunnyvale":          "Pacific Gas & Electric (PG&E) / Silicon Valley Clean Energy",
+    "Cupertino":          "Pacific Gas & Electric (PG&E) / Silicon Valley Clean Energy",
+    "San Jose":           "Pacific Gas & Electric (PG&E) / Silicon Valley Clean Energy",
+    "Santa Clara":        "Silicon Valley Power (City of Santa Clara)",
+    "Fremont":            "Pacific Gas & Electric (PG&E)",
+    "San Francisco":      "Pacific Gas & Electric (PG&E) / CleanPowerSF",
+    "Oakland":            "Pacific Gas & Electric (PG&E) / East Bay Community Energy",
+    "Berkeley":           "Pacific Gas & Electric (PG&E) / East Bay Community Energy",
+    "Hayward":            "Pacific Gas & Electric (PG&E) / East Bay Community Energy",
+    "Richmond":           "Pacific Gas & Electric (PG&E)",
+    "Concord":            "Pacific Gas & Electric (PG&E)",
+    "Walnut Creek":       "Pacific Gas & Electric (PG&E)",
+    "Pleasanton":         "Pacific Gas & Electric (PG&E)",
+    "Livermore":          "Pacific Gas & Electric (PG&E)",
+    "San Ramon":          "Pacific Gas & Electric (PG&E)",
+    "Antioch":            "Pacific Gas & Electric (PG&E)",
+    "Santa Rosa":         "Pacific Gas & Electric (PG&E)",
+    "Napa":               "Pacific Gas & Electric (PG&E) / Napa Green Energy",
+    "Vallejo":            "Pacific Gas & Electric (PG&E)",
+    "Fairfield":          "Pacific Gas & Electric (PG&E)",
+    "Vacaville":          "Pacific Gas & Electric (PG&E)",
+    "Menlo Park":         "Pacific Gas & Electric (PG&E) / Peninsula Clean Energy",
+    "Redwood City":       "Pacific Gas & Electric (PG&E) / Peninsula Clean Energy",
+    "San Mateo":          "Pacific Gas & Electric (PG&E) / Peninsula Clean Energy",
+    # California — Central Valley
+    "Stockton":           "Pacific Gas & Electric (PG&E)",
+    "Fresno":             "Pacific Gas & Electric (PG&E)",
+    "Bakersfield":        "Pacific Gas & Electric (PG&E)",
+    "Modesto":            "Pacific Gas & Electric (PG&E)",
+    "Turlock":            "Turlock Irrigation District (TID)",
+    "Merced":             "Pacific Gas & Electric (PG&E)",
+    "Visalia":            "Pacific Gas & Electric (PG&E)",
+    "Chico":              "Pacific Gas & Electric (PG&E)",
+    "Redding":            "Pacific Gas & Electric (PG&E) / Redding Electric Utility",
+    # California — Sacramento area
+    "Sacramento":         "Sacramento Municipal Utility District (SMUD)",
+    "Elk Grove":          "Sacramento Municipal Utility District (SMUD)",
+    "Folsom":             "Sacramento Municipal Utility District (SMUD)",
+    "Davis":              "Sacramento Municipal Utility District (SMUD)",
+    "Roseville":          "Roseville Electric Utility (City of Roseville)",
+    "Rocklin":            "Roseville Electric Utility / Pacific Gas & Electric (PG&E)",
+    "Woodland":           "Pacific Gas & Electric (PG&E)",
+    # California — Los Angeles area
+    "Los Angeles":        "Los Angeles Dept. of Water & Power (LADWP)",
+    "Long Beach":         "Southern California Edison (SCE) / Long Beach Power",
+    "Glendale":           "Glendale Water & Power",
+    "Burbank":            "Burbank Water and Power",
+    "Pasadena":           "Pasadena Water and Power",
+    "Beverly Hills":      "Southern California Edison (SCE)",
+    "Santa Monica":       "Southern California Edison (SCE)",
+    "Torrance":           "Southern California Edison (SCE)",
+    "El Monte":           "Southern California Edison (SCE)",
+    "Pomona":             "Southern California Edison (SCE)",
+    # California — Inland SoCal
+    "Anaheim":            "Anaheim Public Utilities",
+    "Riverside":          "Riverside Public Utilities",
+    "San Bernardino":     "Southern California Edison (SCE)",
+    "Fontana":            "Southern California Edison (SCE)",
+    "Rancho Cucamonga":   "Southern California Edison (SCE)",
+    "Victorville":        "Southern California Edison (SCE)",
+    "Irvine":             "Southern California Edison (SCE)",
+    "Santa Ana":          "Southern California Edison (SCE)",
+    "Orange":             "Southern California Edison (SCE)",
+    "Fullerton":          "Southern California Edison (SCE)",
+    "Garden Grove":       "Southern California Edison (SCE)",
+    "Murrieta":           "Southern California Edison (SCE)",
+    "Temecula":           "Southern California Edison (SCE)",
+    "Mission Viejo":      "Southern California Edison (SCE)",
+    "Lake Forest":        "Southern California Edison (SCE)",
+    "Tustin":             "Southern California Edison (SCE)",
+    "Oxnard":             "Southern California Edison (SCE)",
+    "Ventura":            "Southern California Edison (SCE)",
+    "Thousand Oaks":      "Southern California Edison (SCE)",
+    "Simi Valley":        "Southern California Edison (SCE)",
+    "Santa Barbara":      "Southern California Edison (SCE)",
+    # California — San Diego (SDG&E)
+    "San Diego":          "San Diego Gas & Electric (SDG&E)",
+    "Chula Vista":        "San Diego Gas & Electric (SDG&E)",
+    "Oceanside":          "San Diego Gas & Electric (SDG&E)",
+    "Carlsbad":           "San Diego Gas & Electric (SDG&E)",
+    "El Cajon":           "San Diego Gas & Electric (SDG&E)",
+    "Escondido":          "San Diego Gas & Electric (SDG&E)",
+    "Vista":              "San Diego Gas & Electric (SDG&E)",
+    "San Marcos":         "San Diego Gas & Electric (SDG&E)",
+}
+
 STATE_CLIMATE = {
     "DC": "mixed-humid",
     "AK": "subarctic", "HI": "tropical",
@@ -689,6 +995,13 @@ class PowerGridScraper:
 
         grid = self._fetch_eia_state_data(state_abbrev)
         result.update(grid)
+
+        # Override state-level generation mix with city-specific profile when available
+        city_profile = CITY_GENERATION_PROFILES.get(city)
+        if city_profile:
+            result["generation_mix"] = city_profile
+            result["data_source"] = result.get("data_source", "simulated") + " (city-specific mix)"
+
         result["city_stats"] = self._get_city_stats(city, state_abbrev, result)
         return result
 
@@ -708,6 +1021,12 @@ class PowerGridScraper:
         sales = grid_data.get("annual_sales_gwh") or 0
         price = grid_data.get("retail_price_cents_kwh")
 
+        # Use city-specific retail price and climate zone when available
+        city_price = CITY_RETAIL_PRICES.get(city)
+        if city_price:
+            price = city_price
+        climate = CITY_CLIMATE_ZONES.get(city) or STATE_CLIMATE.get(state_abbrev, "mixed")
+
         return {
             "city_population_k": city_pop_k,
             "state_population_k": state_pop_k,
@@ -717,7 +1036,7 @@ class PowerGridScraper:
             "estimated_avg_demand_mw": round(avg * share),
             "estimated_annual_sales_gwh": round(sales * share) if sales else None,
             "retail_price_cents_kwh": price,
-            "climate_zone": STATE_CLIMATE.get(state_abbrev, "mixed"),
+            "climate_zone": climate,
             "note": (
                 f"City estimates scaled from state EIA data "
                 f"({city_pop_k:,}K / {state_pop_k:,}K state pop = {share_pct}% share)"
@@ -803,7 +1122,17 @@ class PowerGridScraper:
         return self._fallback_provider(state_abbrev, city)
 
     def _fallback_provider(self, state_abbrev: str, city: str) -> Dict:
-        """Return well-known utility providers per state when API is unavailable."""
+        """Return well-known utility providers per state/city when API is unavailable."""
+        # Check for a city-specific provider first
+        city_provider = CITY_UTILITY_PROVIDERS.get(city)
+        if city_provider:
+            return {
+                "name": city_provider,
+                "id": "",
+                "ownership": "Public" if any(w in city_provider for w in ("Municipal", "SMUD", "LADWP", "Utilities (City", "Dept.", "District", "Roseville Electric", "CPAU")) else "Investor-owned",
+                "service_type": "Bundled",
+                "all_providers": [city_provider],
+            }
         providers = {
             "AL": "Alabama Power (Southern Company)",
             "AK": "Golden Valley Electric Association",
